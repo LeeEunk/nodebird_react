@@ -10,7 +10,7 @@ For building and running the application you need:
 
 ### Installation
 ``` bash
-$ git clone
+$ git clone https://github.com/LeeEunk/nodebird_react.git
 $ cd react-nodebird
 ```
 #### Backend
