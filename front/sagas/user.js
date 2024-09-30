@@ -13,21 +13,21 @@ import {
 
 function logInAPI(data) { //generate X
     // 서버에 요청을 보내는 부분
-    return axios.post('/api/login', data);
+    return axios.post('/user/login', data);
 }
 
 // saga 명령어를 쓰는 이유 -> 테스트하기 좋음
 function* logIn(action) {
     try {// 함수, 매개변수들
-        //const result = yield call(logInAPI, action.data) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
+        const result = yield call(logInAPI, action.data) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
         // yield가 await과 비슷 blocking
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
         console.log("saga login");
-        yield delay(1000);
+        // yield delay(1000);
         yield put({ //put은 action을 dispatch
             type: LOG_IN_SUCCESS,
-            data: action.data
+            data: result.data,
         });
     } catch (err) {
         console.error(err);
@@ -39,19 +39,18 @@ function* logIn(action) {
 }
 
 function logOutAPI() { //generate X
-    return axios.post('/api/logout');
+    return axios.post('/user/logout');
 }
 
 function* logOut() {
     try {
-        // const result = yield call(logOutAPI) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
+        yield call(logOutAPI) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
         // yield가 await과 비슷 blocking
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
-        yield delay(1000);
+        // yield delay(1000);
         yield put({ //put은 action을 dispatch
             type: LOG_OUT_SUCCESS,
-            // data: result.data
         });
     } catch (err) {
         yield put({
@@ -62,7 +61,7 @@ function* logOut() {
 }
 
 function signUpAPI(data){
-    return axios.post('http://localhost:3065/user', data)
+    return axios.post('/user', data)
 }
 
 function* signUp(action) {
