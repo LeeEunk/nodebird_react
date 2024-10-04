@@ -1,6 +1,9 @@
 import {produce} from 'immer';
 
 export const initialState = {
+    loadMyInfoLoading: false, // 유저 정보 가져오기 시도중 -> true면 로딩창 띄우기
+    loadMyInfoDone: false,
+    loadMyInfoError: null,
     followLoading: false, // 팔로우 시도중 -> true면 로딩창 띄우기
     followDone: false,
     followError: null,
@@ -26,6 +29,10 @@ export const initialState = {
 
 // 변수명 SYNTAX 에러를 막기 위해 따로 빼줌
 // reducer에서는 상태를 바꾸고 싶다면 액션을 변경해주면 됨
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
@@ -53,14 +60,14 @@ export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
-const dummyUser = (data) => ({
-    ...data,
-    nickname : 'eunkk',
-    id: 1,
-    Posts: [{id: 1}],
-    Followings: [{nickname: 'eunkk'}, {nickname: 'suzi'}, {nickname: 'nini'},],
-    Followers: [{nickname: 'eunkk'}, {nickname: 'suzi'}, {nickname: 'nini'},],
-})
+// const dummyUser = (data) => ({
+//     ...data,
+//     nickname : 'eunkk',
+//     id: 1,
+//     Posts: [{id: 1}],
+//     Followings: [{nickname: 'eunkk'}, {nickname: 'suzi'}, {nickname: 'nini'},],
+//     Followers: [{nickname: 'eunkk'}, {nickname: 'suzi'}, {nickname: 'nini'},],
+// })
 
 export const loginRequestAction = (data) => {
     return {
@@ -77,6 +84,23 @@ export const logoutRequestAction = () => {
 
 const reducer = (state = initialState, action) => produce(state, (draft) => { // 화살표 함수 return 생략 원래는 return produce임
         switch (action.type) {
+        case LOAD_MY_INFO_REQUEST : 
+            draft.loadMyInfoLoading= true;
+            draft.loadMyInfoError= null;
+            draft.loadMyInfoDone= false;
+
+        case LOAD_MY_INFO_SUCCESS : 
+            draft.loadMyInfoLoading= false;
+            draft.loadMyInfoDone= true;
+            draft.me = action.data;
+            break;
+        
+        case LOAD_MY_INFO_FAILURE : 
+            draft.loadMyInfoLoading= false;
+            draft.loadMyInfoError= action.error;
+            break;
+
+
             case FOLLOW_REQUEST : 
                 draft.followLoading= true;
                 draft.followError= null;
@@ -196,7 +220,6 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
             default:
                 break;
         }
-    
     });
 
 export default reducer;

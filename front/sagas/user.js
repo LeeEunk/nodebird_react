@@ -4,12 +4,39 @@ import {
     FOLLOW_FAILURE,
     FOLLOW_REQUEST,
     FOLLOW_SUCCESS,
+    LOAD_MY_INFO_FAILURE,
+    LOAD_MY_INFO_REQUEST,
+    LOAD_MY_INFO_SUCCESS,
     LOG_IN_FAILURE, LOG_IN_REQUEST, LOG_IN_SUCCESS, 
     LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, 
     SIGN_UP_FAILURE, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, 
     UNFOLLOW_FAILURE, 
     UNFOLLOW_REQUEST,
-    UNFOLLOW_SUCCESS} from "../reducers/user";
+    UNFOLLOW_SUCCESS 
+} from "../reducers/user";
+
+function loadMyInfoAPI() { //get, delete는 data가 없음
+    return axios.get('/user');
+}
+
+
+function* loadMyInfo(action) {
+    try {
+        const result = yield call(loadMyInfoAPI, action.data);
+        // yield delay(1000);
+        yield put({
+            type: LOAD_MY_INFO_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_MY_INFO_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 
 function logInAPI(data) { //generate X
     // 서버에 요청을 보내는 부분
@@ -126,6 +153,10 @@ function* unfollow(action) {
 //이벤트 리스너들 잔뜩 만들어줌
 // yield 특징 일회용임 -> 한번만 사용할 수 있음 -> 그래서 while 반복문을 활용함 -> 무한루프로 안빠짐 한번만 실행하기 때문
 // while 대신에 take는 동기적으로 동작, takeEvery는 비동기적으로 동작
+function* watchLoadMyInfo() {
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo); 
+}
+
 function* watchFollow() {
     yield takeLatest(FOLLOW_REQUEST, follow); 
 }
@@ -149,6 +180,7 @@ function* watchSignUp() {
 
 export default function* userSaga() {
     yield all([
+        fork(watchLoadMyInfo),
         fork(watchFollow),
         fork(watchUnfollow),
         fork(watchLogIn),
