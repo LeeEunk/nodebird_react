@@ -23,24 +23,24 @@ export const initialState = {
     addCommentError: null,
 };
 
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-    id: shortId.generate(),
-    User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName()
-    },
-    content: faker.lorem.paragraph(),
-    Images: [{
-        src: faker.image.image(),
-    }],
-    Comments: [{
-        User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-        },
-        content: faker.lorem.sentence(),
-    }],
-}));
+// export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+//     id: shortId.generate(),
+//     User: {
+//         id: shortId.generate(),
+//         nickname: faker.name.findName()
+//     },
+//     content: faker.lorem.paragraph(),
+//     Images: [{
+//         src: faker.image.image(),
+//     }],
+//     Comments: [{
+//         User: {
+//             id: shortId.generate(),
+//             nickname: faker.name.findName(),
+//         },
+//         content: faker.lorem.sentence(),
+//     }],
+// }));
 
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
@@ -70,27 +70,28 @@ export const addComment = (data)=> ({
     data,
 });
 
-const dummyPost = (data) => ( {
-    // 더미데이터 id는 npm i shortid 활용해야 encounter 에러가 안남 -> id 정하기 애매할때 사용하기 좋음
-    // faker는 닉네임을 임의로 지정해줌 
-    id: data.id,
-    content: data.content,
-    User: {
-        id:1,
-        nickname: 'eunk',
-    },
-    Images: [],
-    Comments: [],
-});
+// const dummyPost = (data) => ( {
+//     // 더미데이터 id는 npm i shortid 활용해야 encounter 에러가 안남 -> id 정하기 애매할때 사용하기 좋음
+//     // faker는 닉네임을 임의로 지정해줌 
+//     id: data.id,
+//     content: data.content,
+//     User: {
+//         id:1,
+//         nickname: 'eunk',
+//     },
+//     Images: [],
+//     Comments: [],
+// });
 
-const dummyComment = (data) => ({
-    id: shortId.generate(),
-    content: data,
-    User: {
-        id:1,
-        nickname: 'eunk',
-    },
-})
+// const dummyComment = (data) => ({
+//     id: shortId.generate(),
+//     content: data,
+//     User: {
+//         id:1,
+//         nickname: 'eunk',
+//     },
+// })
+
 //이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 // immer를 사용할때 state는 절대 건들면 안되고 draft만 조작해야 함
 const reducer = (state = initialState, action) => {
@@ -102,7 +103,7 @@ const reducer = (state = initialState, action) => {
                     draft.loadPostsError = null;
                     break;
             case LOAD_POSTS_SUCCESS:
-                    draft.mainPosts = action.data.concat(draft.mainPosts);
+                    draft.mainPosts = action.data.concat(draft.mainPosts); // 기존 게시물에 추가
                     draft.loadPostsLoading = false;
                     draft.loadPostsDone = true;
                     draft.hasMorePosts = draft.mainPosts.length < 50; //최대 50개의 게시물만 보임
@@ -149,8 +150,8 @@ const reducer = (state = initialState, action) => {
                 draft.addCommentError= null;
                 break;
             case ADD_COMMENT_SUCCESS:
-                const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-                post.Comments.unshift(dummyComment(action.data.content));
+                const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+                post.Comments.unshift(action.data);
                 // const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId);
                 // const post = { ...state.mainPosts[postIndex]};
                 // post.Comments = [dummyComment(action.data.content), ...post.Comments];

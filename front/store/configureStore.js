@@ -15,9 +15,9 @@ import rootSaga from '../sagas';
 // {type: 'LOG_IN', data: {…}}
 const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     console.log(action);
-    if(typeof action === 'function') {
-        return action(dispatch, getState, extraArgument);
-    }
+    // if(typeof action === 'function') {
+    //     return action(dispatch, getState, extraArgument);
+    // }
     return next(action);
 }
 
@@ -29,7 +29,7 @@ const configureStore = () => {
     // 배포용
     const enhancer = process.env.NODE_ENV === 'production'
         ? compose(applyMiddleware(...middlewares))
-        : composeWithDevTools(applyMiddleware(...middlewares))
+        : composeWithDevTools(applyMiddleware(...middlewares));
     // 개발용
     // const enhancer = process.env.NODE_ENV === 'production'
     //     ? compose(applyMiddleware([]))
@@ -39,7 +39,6 @@ const configureStore = () => {
     const store = createStore(reducer, enhancer);
     store.sagaTask = sagaMiddleware.run(rootSaga);
     return store;
-
 };
 
 const wrapper = createWrapper(configureStore, {

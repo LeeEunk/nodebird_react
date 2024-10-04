@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user'
 import { useInView } from 'react-intersection-observer';
 
 const Home = () => {
@@ -13,6 +14,9 @@ const Home = () => {
     const [ref, inView] = useInView();
 
     useEffect (() => {
+        dispatch({
+            type: LOAD_MY_INFO_REQUEST,
+        });
         dispatch({
             type: LOAD_POSTS_REQUEST,
         });

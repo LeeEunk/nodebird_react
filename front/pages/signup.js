@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import Router from 'next/router';
 import AppLayout from "../components/AppLayout";
 import Head from "next/head";
 import { Checkbox, Form, Input, Button } from 'antd';
@@ -13,7 +14,26 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
     const dispatch = useDispatch();
-    const { signUpLoading } = useSelector((state) => state.user)
+    const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
+
+    useEffect(() => { // 로그인 안하면 프로필 안보이게 바로 home으로 이동
+        if(!(me && me.id)) {
+            Router.replace('/'); // replace는 뒤로가기해도 이전페이지로 안돌아감
+        }
+    },[ me && me.id]);
+    
+    useEffect(() => {
+        if(signUpDone) {
+            Router.replace('/'); // push는 뒤로가기하면 이전 페이지로 돌아감
+        }
+    },[signUpDone]);
+
+    useEffect(() => {
+        if (signUpError) {
+            alert(signUpError);
+        }
+    },[signUpError]);
+
 
     const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
