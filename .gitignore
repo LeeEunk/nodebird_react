@@ -1,0 +1,8 @@
+#dotenv environment variables file
+.env
+
+# next.js build output
+.next
+
+package-lock.json
+.DS_Store
