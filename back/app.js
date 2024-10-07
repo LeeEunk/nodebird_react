@@ -6,6 +6,7 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
+const morgan = require('morgan');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -24,6 +25,9 @@ db.sequelize.sync()
     })
     .catch(console.error);
 passportConfig();
+
+// 프론트에서 백엔드에 어떤 요청이 있는지 보여줌
+app.use(morgan('dev'));
 
 // router보다 늘 위에 있어야 함 위에서 아래로 실행되므로
 // req.body 인식
@@ -53,8 +57,9 @@ app.get('/api', (req, res) => {
     res.send('hello api')
 });
 
-app.use('/post', postRouter);
+// 라우터 순서가 매우 중요
 app.use('/posts', postsRouter);
+app.use('/post', postRouter);
 app.use('/user', userRouter);
 
 // // default로 에러처리 미들웨어가 장착되어있음 커스터마이징하려면 여기를 수정하면 됨
@@ -63,5 +68,5 @@ app.use('/user', userRouter);
 // });
 
 app.listen(3065, () => {
-    console.log("서버 실행 중");
+    console.log("서버 실행 중....");
 });

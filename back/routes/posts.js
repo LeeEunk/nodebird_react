@@ -1,5 +1,5 @@
 const express = require('express');
-const { Post, User } = require('../models');
+const { Post, Image, User } = require('../models');
 const router = express.Router();
 
 router.get('/', async(req, res, next) => { // GET /posts -> 복수개의 게시물 조회, 1개만 가져오는거와는 구분
@@ -11,8 +11,11 @@ router.get('/', async(req, res, next) => { // GET /posts -> 복수개의 게시�
             order: [['createdAt', 'DESC']], //최신글부터
             include: [{
                 model: User,
+            }, {
+                model: Image,
             }],
         });
+        console.log(posts);
         res.status(200).json(posts);
     } catch (error) {
         console.error(error);

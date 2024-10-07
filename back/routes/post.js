@@ -5,6 +5,27 @@ const { Post, Image, Comment, User } = require('../models');
 const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
+
+router.get('/', async(req, res, next) => { // GET /posts
+    try{
+        const posts = await Post.findAll({
+            limit: 10,
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: User,
+            }, {
+                model: Image,
+            }],
+        });
+        console.log(posts);
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+
+})
+
 router.post('/', isLoggedIn, async (req, res, next ) => { // POST /post
     try {
         const post = await Post.create({

@@ -11,7 +11,7 @@ import {
      REMOVE_POST_REQUEST,
      REMOVE_POST_SUCCESS} from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
-import shortId from "shortid";
+// import shortId from "shortid";
 
 function loadPostsAPI(data) { //generate X
     return axios.get('/posts', data);
@@ -43,7 +43,7 @@ function* addPost(action) {
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
         // yield delay(1000);
-        const id = shortId.generate();
+        // const id = shortId.generate();
         yield put({ //put은 action을 dispatch
             type: ADD_POST_SUCCESS,
             data: result.data,
@@ -71,7 +71,7 @@ function* removePost(action) {
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
         yield delay(1000);
-        const id = shortId.generate();
+        // const id = shortId.generate();
         yield put({ //put은 action을 dispatch
             type: REMOVE_POST_SUCCESS,
             data: action.data,
