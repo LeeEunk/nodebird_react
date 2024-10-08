@@ -27,12 +27,12 @@ import { combineReducers } from 'redux';
 // 액션을 만들어주는 함수를 만들기 (이름만 여러번 변경하고 싶을때 새로 계속 객체를 생성해야 하는게 낭비이므로)
 // 동적으로 생성
 // action creator
-const changeNickname = (data) => {
-    return {
-        type : 'CHANGE_NICKNAME',
-        data,
-    }
-};
+// const changeNickname = (data) => {
+//     return {
+//         type : 'CHANGE_NICKNAME',
+//         data,
+//     }
+// };
 //changeNickname('dooyoo')
 // store.dispatch(changeNickname('member kyung'))
 

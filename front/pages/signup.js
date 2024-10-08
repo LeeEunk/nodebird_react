@@ -1,12 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Router from 'next/router';
-import AppLayout from "../components/AppLayout";
 import Head from "next/head";
 import { Checkbox, Form, Input, Button } from 'antd';
-import useInput from "../components/hooks/useInput";
 import styled from "styled-components";
-import { SIGN_UP_REQUEST } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
+import Router from 'next/router';
+import axios from "axios";
+import { END } from 'redux-saga'
+
+import AppLayout from "../components/AppLayout";
+import useInput from "../components/hooks/useInput";
+import { LOAD_MY_INFO_REQUEST, SIGN_UP_REQUEST } from "../reducers/user";
+import wrapper from "../store/configureStore";
+
 
 const ErrorMessage = styled.div`
     color: red;
@@ -38,6 +43,7 @@ const Signup = () => {
     const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password, onChangePassword] = useInput('');
+
     // 비밀번호 체크는 중복이 안됨
     const [passwordCheck, setPasswordCheck] = useState('');
     const [passwordError, setPasswordError] = useState(false);
@@ -120,7 +126,7 @@ const Signup = () => {
                     {passwordError && <ErrorMessage> 비밀번호가 일치하지 않습니다.</ErrorMessage>}
                 </div>
                 <div>
-                    <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>은경 홈페이지 약관에 모두 동의합니다.</Checkbox>
+                    <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>홈페이지 약관에 모두 동의합니다.</Checkbox>
                     {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
                 </div>
                 <div style={{ marginTop: 10}}>
@@ -130,5 +136,7 @@ const Signup = () => {
         </AppLayout>
     )
 };
+
+
 
 export default Signup;

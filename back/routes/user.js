@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-const { User, Post, Image, Comment } = require('../models');
+const { User, Post } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -138,7 +138,7 @@ router.patch('/:userId/follow', isLoggedIn, async (req, res, next ) => { //PATCH
             res.status(403).send('없는 사람을 팔로우하려고 하시네요?');
         }
         await user.addFollowers(req.user.id);
-        res.status(200).json({ UserId : req.params.userId });
+        res.status(200).json({ UserId : parseInt(req.params.userId, 10) });
     } catch (error) {
         console.error(error);
         next(error);
@@ -152,7 +152,7 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next ) => { //DELE
             res.status(403).send('없는 사람을 언팔로우하려고 하시네요?');
         }
         await user.removeFollowers(req.user.id);
-        res.status(200).json({ UserId : req.params.userId });
+        res.status(200).json({ UserId : parseInt(req.params.userId, 10) });
     } catch (error) {
         console.error(error);
         next(error);

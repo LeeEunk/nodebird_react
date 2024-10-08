@@ -28,8 +28,8 @@ const LoginForm = () => {
     useEffect(() => {
         if(logInError) {
             alert(logInError) ;
-    }
-}, [logInError]);
+        }
+    }, [logInError]);
 
     // component에 props로 들어가는 함수는 useCallback으로 무조건 최적화 해줘야함
     // useMemo 는 특정 결과값을 재사용 할 때 사용하는 반면, useCallback 은 특정 함수를 새로 만들지 않고 재사용하고 싶을때 사용

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import AppLayout from "../components/AppLayout";
 import Head from "next/head";
 import NicknameEditForm from "../components/NicknameEditForm";
@@ -25,11 +25,23 @@ const Profile = () => {
             Router.push('/');
         }
     },[ me && me.id]);
+
+    const loadMoreFollowings = useCallback(() => {
+        setFollowingsLimit((prev) => prev + 3 );
+    }, []);
+
+    const loadMoreFollowers = useCallback(() => {
+        setFollowersLimit((prev) => prev + 3);
+    },[]);
     
     if(!me) {
-        return null;
+        return '내 정보 로딩중...';
     }
 
+    if(followerError || followingError) {
+        console.error(followerError || followingError);
+        return <div>팔로잉/팔로워 로딩 중 에러가 발생합니다.</div>
+    }
 
     return (
         <>
@@ -38,8 +50,8 @@ const Profile = () => {
         </Head>
         <AppLayout>
             <NicknameEditForm/>
-            <FollowList header="팔로잉" data={me.Followings}/>
-            <FollowList header="팔로워" data={me.Followers}/>
+            <FollowList header="팔로잉" data={me.Followings} onClickMore={loadMoreFollowings} loading={!followingsData && !followingError}/>
+            <FollowList header="팔로워" data={me.Followers} onClickMore={loadMoreFollowers} loading={!followersData && !followerError}/>
         </AppLayout>
         </>
     )

@@ -150,10 +150,11 @@ const reducer = (state = initialState, action) => {
                     draft.loadPostsError = null;
                     break;
             case LOAD_POSTS_SUCCESS:
-                    draft.mainPosts = action.data.concat(draft.mainPosts); // 기존 게시물에 추가
+                    draft.mainPosts = draft.mainPosts.concat(action.data); // 기존 게시물에 추가
                     draft.loadPostsLoading = false;
                     draft.loadPostsDone = true;
-                    draft.hasMorePosts = draft.mainPosts.length < 50; //최대 50개의 게시물만 보임
+                    // draft.hasMorePosts = draft.mainPosts.length < 50; //최대 50개의 게시물만 보임
+                    draft.hasMorePosts = action.data.length === 10;
                     break;
             case LOAD_POSTS_FAILURE:
                 draft.loadPostsLoading = false;

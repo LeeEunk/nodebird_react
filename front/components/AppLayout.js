@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useCallback } from 'react'
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 
-import LoginForm from './LoginForm';
-import styled, { createGlobalStyle } from 'styled-components';
-import { useSelector } from 'react-redux';
 import UserProfile from './UserProfile';
+import LoginForm from './LoginForm';
+import useInput from './hooks/useInput';
+
+import styled, { createGlobalStyle } from 'styled-components';
+import { Router } from 'next/dist/client/router';
+
 
 const Global = createGlobalStyle`
   .ant-row{
@@ -32,7 +36,12 @@ const SearchInput = styled(Input.Search)`
 const AppLayout = ({ children }) => {
 
   // const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const [searchInput, onChangeSearchInput] = useInput('');
   const { me } = useSelector((state) => state.user);
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
     // return 안에 들어갈 수 있는 모든 것들이 node이다.
   return (
@@ -47,11 +56,16 @@ const AppLayout = ({ children }) => {
           </Menu.Item>
           <Menu.Item>
             {/* <Input.Search enterButton style={{verticalAlign:'middle'}}/> */}
-            <SearchInput enterButton />
+            <SearchInput 
+              enterButton 
+              value={searchInput}
+              onChange={onChangeSearchInput}
+              onSearch={onSearch}
+            />
           </Menu.Item>
-          <Menu.Item>
+          {/* <Menu.Item>
             <Link href="/signup"><a>회원가입</a></Link>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
         <Row gutter={8}>
           {/* 컬럼사이의 간격을 주는 거를 gutter로 지정함 -> padding이라고 보면 됨 */}
@@ -77,4 +91,4 @@ AppLayout.propTypes = {
     children: PropTypes.node.isRequired,
 }
 
-export default AppLayout
+export default AppLayout;
