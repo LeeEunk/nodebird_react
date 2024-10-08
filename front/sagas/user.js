@@ -1,6 +1,9 @@
 import axios from "axios";
 import { all, call, delay, fork, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { 
+    CAHNGE_NICKANME_SUCCESS,
+    CHANGE_NICKNAME_FAILURE,
+    CHANGE_NICKNAME_REQUEST,
     FOLLOW_FAILURE,
     FOLLOW_REQUEST,
     FOLLOW_SUCCESS,
@@ -15,10 +18,30 @@ import {
     UNFOLLOW_SUCCESS 
 } from "../reducers/user";
 
+function changeNicknameAPI(data) { //get, delete는 data가 없음
+    return axios.patch('/user/nickname', {nickname: data});
+}
+
+function* changeNickname(action) {
+    try {
+        const result = yield call(changeNicknameAPI, action.data);
+        // yield delay(1000);
+        yield put({
+            type: CAHNGE_NICKANME_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: CHANGE_NICKNAME_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 function loadMyInfoAPI() { //get, delete는 data가 없음
     return axios.get('/user');
 }
-
 
 function* loadMyInfo(action) {
     try {
@@ -100,24 +123,24 @@ function* signUp(action) {
             type: SIGN_UP_SUCCESS,
         });
     } catch (err) {
-        console.err(err);
+        console.error(err);
         yield put({
             type: SIGN_UP_FAILURE,
             error: err.response.data,
         })
     }
 }
-function followAPI(){
-    return axios.post('/api/follow')
+function followAPI(data){
+    return axios.patch(`/user/${data}/follow`);
 }
 
 function* follow(action) {
     try{
-        // const result = yield call(followAPI)
-        yield delay(1000);
+        const result = yield call(followAPI, action.data)
+        // yield delay(1000);
         yield put({ //put은 action을 dispatch
             type: FOLLOW_SUCCESS,
-            data: action.data,
+            data: result.data,
         });
     } catch (err) {
         console.err(err);
@@ -128,17 +151,17 @@ function* follow(action) {
     }
 }
 
-function unfollowAPI(){
-    return axios.post('/api/unfollow')
+function unfollowAPI(data){
+    return axios.delete(`/user/${data}/follow`)
 }
 
 function* unfollow(action) {
     try{
-        // const result = yield call(unfollowAPI)
-        yield delay(1000);
+        const result = yield call(unfollowAPI, action.data)
+        // yield delay(1000);
         yield put({ //put은 action을 dispatch
             type: UNFOLLOW_SUCCESS,
-            data: action.data,
+            data: result.data,
         });
     } catch (err) {
         console.err(err);
@@ -153,6 +176,10 @@ function* unfollow(action) {
 //이벤트 리스너들 잔뜩 만들어줌
 // yield 특징 일회용임 -> 한번만 사용할 수 있음 -> 그래서 while 반복문을 활용함 -> 무한루프로 안빠짐 한번만 실행하기 때문
 // while 대신에 take는 동기적으로 동작, takeEvery는 비동기적으로 동작
+function* watchChangeNickname() {
+    yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname); 
+}
+
 function* watchLoadMyInfo() {
     yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo); 
 }
@@ -180,6 +207,7 @@ function* watchSignUp() {
 
 export default function* userSaga() {
     yield all([
+        fork(watchChangeNickname),
         fork(watchLoadMyInfo),
         fork(watchFollow),
         fork(watchUnfollow),

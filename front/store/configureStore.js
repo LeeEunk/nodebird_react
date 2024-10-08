@@ -15,9 +15,9 @@ import rootSaga from '../sagas';
 // {type: 'LOG_IN', data: {…}}
 const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     console.log(action);
-    // if(typeof action === 'function') {
-    //     return action(dispatch, getState, extraArgument);
-    // }
+    if(typeof action === 'function') {
+        return action(dispatch, getState, extraArgument);
+    }
     return next(action);
 }
 

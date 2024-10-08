@@ -14,6 +14,12 @@ const Profile = () => {
 
     const {me} = useSelector((state) => state.user);
 
+    useEffect(() => {
+        dispatchEvent({
+            type: LOAD_FOLLOWERS_REQUEST
+        })
+    })
+
     useEffect(() => { // 로그인 안하면 프로필 안보이게 바로 home으로 이동
         if(!(me && me.id)) {
             Router.push('/');

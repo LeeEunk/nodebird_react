@@ -4,14 +4,59 @@ import {
     ADD_COMMENT_FAILURE, ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS,
      ADD_POST_FAILURE, ADD_POST_REQUEST, ADD_POST_SUCCESS, 
      generateDummyPost, 
+     LIKE_POST_FAILURE, 
+     LIKE_POST_REQUEST, 
+     LIKE_POST_SUCCESS, 
      LOAD_POSTS_FAILURE, 
      LOAD_POSTS_REQUEST, 
      LOAD_POSTS_SUCCESS, 
      REMOVE_POST_FAILURE, 
      REMOVE_POST_REQUEST,
-     REMOVE_POST_SUCCESS} from "../reducers/post";
+     REMOVE_POST_SUCCESS,
+     UNLIKE_POST_FAILURE,
+     UNLIKE_POST_REQUEST,
+     UNLIKE_POST_SUCCESS} from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 // import shortId from "shortid";
+
+function likePostAPI(data) { //generate X
+    return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost(action) {
+    try {
+        const result = yield call(likePostAPI, action.data) 
+        yield put({ //put은 action을 dispatch
+            type: LIKE_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        yield put({
+            type: LIKE_POST_FAILURE,
+            data: err.response.data,
+        })
+    }
+}
+
+function unlikePostAPI(data) { //generate X
+    return axios.delete(`/post/${data}/like`);
+}
+
+function* unlikePost(action) {
+    try {
+        const result = yield call(unlikePostAPI, action.data) 
+        yield put({ //put은 action을 dispatch
+            type: UNLIKE_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        yield put({
+            type: UNLIKE_POST_FAILURE,
+            data: err.response.data,
+        })
+    }
+}
+
 
 function loadPostsAPI(data) { //generate X
     return axios.get('/posts', data);
@@ -61,20 +106,20 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) { //generate X
-    return axios.delete('/api/post', data);
+    return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
     try {
-        // const result = yield call(removePostAPI, action.data) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
+        const result = yield call(removePostAPI, action.data) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
         // yield가 await과 비슷 blocking
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
-        yield delay(1000);
+        // yield delay(1000);
         // const id = shortId.generate();
         yield put({ //put은 action을 dispatch
             type: REMOVE_POST_SUCCESS,
-            data: action.data,
+            data: result.data,
         });
         yield put({ //put은 action을 dispatch
             type: REMOVE_POST_OF_ME,
@@ -102,6 +147,7 @@ function* addComment(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: ADD_COMMENT_FAILURE,
             error: err.response.data,
@@ -115,6 +161,14 @@ function* addComment(action) {
 //-> 동시에 로딩된거만 취소됨(단, 프론터서버에서만 적용, 그래서 백엔드에서 2번 저장되지 않았는지 체크 필요)
 // 요청은 2번간거고 응답만 마지막꺼 한개로 받음, 요청은 취소가 안됨
 // 만약 첫번째꺼만 하고 싶으면 takeLeading도 있음
+function* watchLikePost() {
+    yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+function* watchUnlikePost() {
+    yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+
 function* watchLoadPosts() {
     yield throttle(2000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -134,6 +188,8 @@ function* watchAddComment() {
 
 export default function* postSaga() {
     yield all([
+        fork(watchLikePost),
+        fork(watchUnlikePost),
         fork(watchAddPost),
         fork(watchLoadPosts),
         fork(watchRemovePost),

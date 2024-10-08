@@ -19,9 +19,9 @@ export const initialState = {
     signUpLoading: false, //회원가입 시도중
     signUpDone: false,
     signUpError: null,
-    changeNickanmeLoading: false, //닉네임 변경 시도중
-    changeNickanmeDone: false,
-    changeNickanmeError: null,
+    changeNicknameLoading: false, //닉네임 변경 시도중
+    changeNicknameDone: false,
+    changeNicknameError: null,
     me : null,
     signUpData: {},
     loginData: {},    
@@ -127,7 +127,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
             case UNFOLLOW_SUCCESS : 
                 draft.unfollowLoading= false;
                 draft.unfollowDone= true;
-                draft.me.Followings = draft.me.Followings.filter((v) => v.id === action.data);
+                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data.UserId);
                 break;
             
             case UNFOLLOW_FAILURE : 
@@ -175,6 +175,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
                 break;
                         
             case CAHNGE_NICKANME_SUCCESS : 
+                draft.me.nickname = action.data.nickname;
                 draft.changeNicknameLoading= false;
                 draft.changeNicknameDone= true;
                 break;
