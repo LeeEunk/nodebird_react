@@ -1,21 +1,28 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import AppLayout from "../components/AppLayout";
 import Head from "next/head";
 import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Router from 'next/router';
+import { LOAD_FOLLOWERS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user'; 
 
 const Profile = () => {
 
     // 더미데이터
     // const follwerList = [{nickname: 'eunk'},{nickname: '바보'},{nickname: '노드버드오피셜'}];
     // const followingList = [{nickname: 'eunk'},{nickname: '바보'},{nickname: '노드버드오피셜'}];
+    const dispatch = useDispatch();
 
     const {me} = useSelector((state) => state.user);
+    const [followersLimit, setFollowersLimit] = useState(3);
+    const [followingLimit, setFollowingsLimit] = useState(3);
+
+    const { data: followersData, error:followerError} = useSWR(`${backUrl}/user/followers?limit=${followersLimit}`, fetcher);
+    const { data: followingsData, error: followingError} = userSWR(`${backUrl}/user/followings?limit=${followingsLimit}`, fetcher);
 
     useEffect(() => {
-        dispatchEvent({
+        dispatch({
             type: LOAD_FOLLOWERS_REQUEST
         })
     })
@@ -26,7 +33,7 @@ const Profile = () => {
         }
     },[ me && me.id]);
 
-    const loadMoreFollowings = useCallback(() => {
+    const loadMoreFollowings = useCallback(() => { // 3개씩 보여주기
         setFollowingsLimit((prev) => prev + 3 );
     }, []);
 

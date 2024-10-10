@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
+import Router, { useRouter } from 'next/router';
 
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
 import useInput from './hooks/useInput';
 
 import styled, { createGlobalStyle } from 'styled-components';
-import { Router } from 'next/dist/client/router';
+
 
 
 const Global = createGlobalStyle`
@@ -37,6 +38,7 @@ const AppLayout = ({ children }) => {
 
   // const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const [searchInput, onChangeSearchInput] = useInput('');
+  const router = useRouter();
   const { me } = useSelector((state) => state.user);
 
   const onSearch = useCallback(() => {
@@ -47,26 +49,23 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Global/>
-        <Menu mode='horizontal'>
-          <Menu.Item>
-              <Link href="/"><a>노드버드</a></Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link href="/profile"><a>프로필</a></Link>
-          </Menu.Item>
-          <Menu.Item>
-            {/* <Input.Search enterButton style={{verticalAlign:'middle'}}/> */}
-            <SearchInput 
-              enterButton 
-              value={searchInput}
-              onChange={onChangeSearchInput}
-              onSearch={onSearch}
-            />
-          </Menu.Item>
+        <Menu mode='horizontal' selectedKeys={[router.pathname]}
+        items={[
+          { label: <Link href="/"><a>노즈버드</a></Link>, key: '/'},
+          { label: <Link href="/profile"><a>프로필</a></Link>, key: '/profile'},
+          { label: <SearchInput enterButton 
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch}
+            />, key: '/search'},
+        ]}
+        >
+          
           {/* <Menu.Item>
             <Link href="/signup"><a>회원가입</a></Link>
           </Menu.Item> */}
         </Menu>
+        
         <Row gutter={8}>
           {/* 컬럼사이의 간격을 주는 거를 gutter로 지정함 -> padding이라고 보면 됨 */}
           {/* 모바일(xs) 기준 n/24로 생각 꽉 찬거를 24해서 등분으로 나눔 6칸이므로 25% */}
@@ -89,6 +88,6 @@ const AppLayout = ({ children }) => {
 
 AppLayout.propTypes = {
     children: PropTypes.node.isRequired,
-}
+};
 
 export default AppLayout;

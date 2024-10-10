@@ -22,6 +22,15 @@ export const initialState = {
     changeNicknameLoading: false, //닉네임 변경 시도중
     changeNicknameDone: false,
     changeNicknameError: null,
+    loadFollowersLoading: false, //팔로워 시도중
+    loadFollowersDone: false,
+    loadFollowersError: null,
+    loadFollowingsLoading: false, //팔로잉 시도중
+    loadFollowingsDone: false,
+    loadFollowingsError: null,
+    removeFollowersLoading: false, //팔로워 삭제 시도중
+    removeFollowersDone: false,
+    removeFollowersError: null,
     me : null,
     signUpData: {},
     loginData: {},    
@@ -32,6 +41,10 @@ export const initialState = {
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
@@ -52,6 +65,18 @@ export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
 export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
 export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
+
+export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
+export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS';
+export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE';
+
+export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
+export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
+export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
+
+export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST';
+export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS';
+export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
 
 export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
@@ -84,27 +109,113 @@ export const logoutRequestAction = () => {
 
 const reducer = (state = initialState, action) => produce(state, (draft) => { // 화살표 함수 return 생략 원래는 return produce임
         switch (action.type) {
-        case LOAD_MY_INFO_REQUEST : 
-            draft.loadMyInfoLoading= true;
-            draft.loadMyInfoError= null;
-            draft.loadMyInfoDone= false;
+            case REMOVE_FOLLOWER_REQUEST : 
+                draft.removeFollowerLoading= true;
+                draft.removeFollowerError= null;
+                draft.removeFollowerDone= false;
+                break;
 
-        case LOAD_MY_INFO_SUCCESS : 
-            draft.loadMyInfoLoading= false;
-            draft.loadMyInfoDone= true;
-            draft.me = action.data;
-            break;
+            case REMOVE_FOLLOWER_SUCCESS : 
+                draft.removeFollowerLoading= false;
+                draft.removeFollowerDone= true;
+                draft.me.Followers = draft.me.Followers.filter((v) => v.id !== action.data.UserId);
+                break;
         
-        case LOAD_MY_INFO_FAILURE : 
-            draft.loadMyInfoLoading= false;
-            draft.loadMyInfoError= action.error;
-            break;
+            case REMOVE_FOLLOWER_FAILURE : 
+                draft.removeFollowerLoading= false;
+                draft.removeFollowerError= action.error;
+                break;
 
+            case LOAD_FOLLOWINGS_REQUEST : 
+                draft.loadFollowingsLoading= true;
+                draft.loadFollowingsError= null;
+                draft.loadFollowingsDone= false;
+                break;
+
+            case LOAD_FOLLOWINGS_SUCCESS : 
+                draft.loadFollowingsLoading= false;
+                draft.loadFollowingsDone= true;
+                draft.me.Followings = action.data;
+                break;
+            
+            case LOAD_FOLLOWINGS_FAILURE : 
+                draft.loadFollowingsLoading= false;
+                draft.loadFollowingsError= action.error;
+                break;
+        
+            case LOAD_FOLLOWERS_REQUEST : 
+                draft.loadFollowersLoading= true;
+                draft.loadFollowersError= null;
+                draft.loadFollowersDone= false;
+                break;
+
+            case LOAD_FOLLOWERS_SUCCESS : 
+                draft.loadFollowersLoading= false;
+                draft.loadFollowersDone= true;
+                draft.me.Followers = action.data;
+                break;
+        
+            case LOAD_FOLLOWERS_FAILURE : 
+                draft.loadFollowersLoading= false;
+                draft.loadFollowersError= action.error;
+                break;
+            
+            case LOAD_MY_INFO_REQUEST : 
+                draft.loadMyInfoLoading= true;
+                draft.loadMyInfoError= null;
+                draft.loadMyInfoDone= false;
+                break;
+
+            case LOAD_MY_INFO_SUCCESS : 
+                draft.loadMyInfoLoading= false;
+                draft.loadMyInfoDone= true;
+                draft.me = action.data;
+                break;
+        
+            case LOAD_MY_INFO_FAILURE : 
+                draft.loadMyInfoLoading= false;
+                draft.loadMyInfoError= action.error;
+                break;
+
+            case LOAD_MY_INFO_REQUEST : 
+                draft.loadMyInfoLoading= true;
+                draft.loadMyInfoError= null;
+                draft.loadMyInfoDone= false;
+                break;
+
+            case LOAD_MY_INFO_SUCCESS : 
+                draft.loadMyInfoLoading= false;
+                draft.loadMyInfoDone= true;
+                draft.me = action.data;
+                break;
+            
+            case LOAD_MY_INFO_FAILURE : 
+                draft.loadMyInfoLoading= false;
+                draft.loadMyInfoError= action.error;
+                break;
+
+            case LOAD_USER_REQUEST : 
+                draft.loadUserLoading= true;
+                draft.loadUserError= null;
+                draft.loadUserDone= false;
+                break;
+
+            case LOAD_USER_SUCCESS : 
+                draft.loadUserLoading= false;
+                draft.loadUserDone= true;
+                draft.userInfo = action.data;
+                break;
+            
+            case LOAD_USER_FAILURE : 
+                draft.loadUserLoading= false;
+                draft.loadUserError= action.error;
+                break;
 
             case FOLLOW_REQUEST : 
                 draft.followLoading= true;
                 draft.followError= null;
                 draft.followDone= false;
+                break;
 
             case FOLLOW_SUCCESS : 
                 draft.followLoading= false;
@@ -117,12 +228,13 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
                 draft.followError= action.error;
                 break;
 
-                case UNFOLLOW_REQUEST : 
+            case UNFOLLOW_REQUEST : 
                 console.log('reducer login');
                 // 다음 스테이트로 값이 변경, initial state와는 다른 객체가 생김
                 draft.unfollowLoading= true;
                 draft.unfollowError= null;
                 draft.unfollowDone= false;
+                break;
 
             case UNFOLLOW_SUCCESS : 
                 draft.unfollowLoading= false;
@@ -141,6 +253,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
                 draft.logInLoading= true;
                 draft.logInError= null;
                 draft.logInDone= false;
+                break;
 
             case LOG_IN_SUCCESS : 
                 draft.logInLoading= false;

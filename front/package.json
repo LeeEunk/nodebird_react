@@ -30,6 +30,7 @@
     "redux-thunk": "2.3",
     "shortid": "^2.2.16",
     "styled-components": "^6.1.13",
+    "swr": "^2.2.5",
     "use-immer": "^0.10.0"
   },
   "devDependencies": {

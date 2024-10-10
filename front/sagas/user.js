@@ -7,6 +7,15 @@ import {
     FOLLOW_FAILURE,
     FOLLOW_REQUEST,
     FOLLOW_SUCCESS,
+    LOAD_FOLLOWERS_FAILURE,
+    LOAD_FOLLOWERS_REQUEST,
+    LOAD_FOLLOWERS_SUCCESS,
+    LOAD_FOLLOWINGS_FAILURE,
+    LOAD_FOLLOWINGS_REQUEST,
+    LOAD_FOLLOWINGS_SUCCESS,
+    LOAD_USER_FAILURE,
+    LOAD_USER_REQUEST,
+    LOAD_USER_SUCCESS,
     LOAD_MY_INFO_FAILURE,
     LOAD_MY_INFO_REQUEST,
     LOAD_MY_INFO_SUCCESS,
@@ -15,8 +24,76 @@ import {
     SIGN_UP_FAILURE, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, 
     UNFOLLOW_FAILURE, 
     UNFOLLOW_REQUEST,
-    UNFOLLOW_SUCCESS 
+    UNFOLLOW_SUCCESS, 
+    REMOVE_FOLLOWER_REQUEST,
+    REMOVE_FOLLOWER_SUCCESS,
+    REMOVE_FOLLOWER_FAILURE
 } from "../reducers/user";
+
+
+
+function removeFollowerAPI(data) { //get, delete는 data가 없음
+    return axios.delete(`/user/follower/${data}`);
+}
+
+function* removeFollower(action) {
+    try {
+        const result = yield call(removeFollowerAPI, action.data);
+        // yield delay(1000);
+        yield put({
+            type: REMOVE_FOLLOWER_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: REMOVE_FOLLOWER_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function loadFollowersAPI(data) { //get, delete는 data가 없음
+    return axios.get('/user/followers', data);
+}
+
+function* loadFollowers(action) {
+    try {
+        const result = yield call(loadFollowersAPI, action.data);
+        // yield delay(1000);
+        yield put({
+            type: LOAD_FOLLOWERS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_FOLLOWERS_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
+
+function loadFollowingsAPI(data) { //get, delete는 data가 없음
+    return axios.get('/user/followings', data);
+}
+
+function* loadFollowings(action) {
+    try {
+        const result = yield call(loadFollowingsAPI, action.data);
+        // yield delay(1000);
+        yield put({
+            type: LOAD_FOLLOWINGS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_FOLLOWINGS_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 function changeNicknameAPI(data) { //get, delete는 data가 없음
     return axios.patch('/user/nickname', {nickname: data});
@@ -35,7 +112,29 @@ function* changeNickname(action) {
         yield put({
             type: CHANGE_NICKNAME_FAILURE,
             error: err.response.data,
-        })
+        });
+    }
+}
+
+function loadUserAPI() { //get, delete는 data가 없음
+    return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action) {
+    try {
+        const result = yield call(loadUserAPI, action.data);
+        console.log('loadUserData', result.data)
+        // yield delay(1000);
+        yield put({
+            type: LOAD_USER_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_USER_FAILURE,
+            error: err.response.data,
+        });
     }
 }
 
@@ -176,8 +275,24 @@ function* unfollow(action) {
 //이벤트 리스너들 잔뜩 만들어줌
 // yield 특징 일회용임 -> 한번만 사용할 수 있음 -> 그래서 while 반복문을 활용함 -> 무한루프로 안빠짐 한번만 실행하기 때문
 // while 대신에 take는 동기적으로 동작, takeEvery는 비동기적으로 동작
+function* watchRemoveFollower() {
+    yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower); 
+}
+
+function* watchLoadFollowers() {
+    yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers); 
+}
+
+function* watchLoadFollowings() {
+    yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings); 
+}
+
 function* watchChangeNickname() {
     yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname); 
+}
+
+function* watchLoadUser() {
+    yield takeLatest(LOAD_USER_REQUEST, loadUser); 
 }
 
 function* watchLoadMyInfo() {
@@ -207,7 +322,11 @@ function* watchSignUp() {
 
 export default function* userSaga() {
     yield all([
+        fork(watchRemoveFollower),
+        fork(watchLoadFollowers),
+        fork(watchLoadFollowings),
         fork(watchChangeNickname),
+        fork(watchLoadUser),
         fork(watchLoadMyInfo),
         fork(watchFollow),
         fork(watchUnfollow),
