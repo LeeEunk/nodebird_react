@@ -65,7 +65,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
             // 파일은 보통 s3해서 캐싱해서 cdn에 올려 성능을 최적화하고 db는 파일에 접근할 수 있는 주소만 갖고 있음
         } else { // 이미지를 하나만 올리면 image: eunkk.png -> 배열 x
             const image = await Image.create({ src: req.body.image });
-            await post.addImages(images);
+            await post.addImages(image);
         }
     }
     const fullPost = await Post.findOne({
