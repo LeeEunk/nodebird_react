@@ -15,9 +15,31 @@ import {
      REMOVE_POST_SUCCESS,
      UNLIKE_POST_FAILURE,
      UNLIKE_POST_REQUEST,
-     UNLIKE_POST_SUCCESS} from "../reducers/post";
+     UNLIKE_POST_SUCCESS,
+     UPLOAD_IMAGES_FAILURE,
+     UPLOAD_IMAGES_REQUEST,
+     UPLOAD_IMAGES_SUCCESS} from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 // import shortId from "shortid";
+
+function uploadImagesAPI(data) { //generate X
+    return axios.post('/post/images', data);
+}
+
+function* uploadImages(action) {
+    try {
+        const result = yield call(uploadImagesAPI, action.data) 
+        yield put({ //put은 action을 dispatch
+            type: UPLOAD_IMAGES_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        yield put({
+            type: UPLOAD_IMAGES_FAILURE,
+            data: err.response.data,
+        })
+    }
+}
 
 function likePostAPI(data) { //generate X
     return axios.patch(`/post/${data}/like`);
@@ -161,6 +183,10 @@ function* addComment(action) {
 //-> 동시에 로딩된거만 취소됨(단, 프론터서버에서만 적용, 그래서 백엔드에서 2번 저장되지 않았는지 체크 필요)
 // 요청은 2번간거고 응답만 마지막꺼 한개로 받음, 요청은 취소가 안됨
 // 만약 첫번째꺼만 하고 싶으면 takeLeading도 있음
+function* watchUploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
+
 function* watchLikePost() {
     yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
@@ -188,6 +214,7 @@ function* watchAddComment() {
 
 export default function* postSaga() {
     yield all([
+        fork(watchUploadImages),
         fork(watchLikePost),
         fork(watchUnlikePost),
         fork(watchAddPost),

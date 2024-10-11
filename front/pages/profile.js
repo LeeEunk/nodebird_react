@@ -5,7 +5,9 @@ import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
 import { useDispatch, useSelector } from "react-redux";
 import Router from 'next/router';
-import { LOAD_FOLLOWERS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user'; 
+import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user'; 
+import useSWR from 'swr';
+// import { backUrl} from '../config/config';
 
 const Profile = () => {
 
@@ -18,14 +20,17 @@ const Profile = () => {
     const [followersLimit, setFollowersLimit] = useState(3);
     const [followingLimit, setFollowingsLimit] = useState(3);
 
-    const { data: followersData, error:followerError} = useSWR(`${backUrl}/user/followers?limit=${followersLimit}`, fetcher);
-    const { data: followingsData, error: followingError} = userSWR(`${backUrl}/user/followings?limit=${followingsLimit}`, fetcher);
+    // const { data: followersData, error:followerError} = useSWR(`${backUrl}/user/followers?limit=${followersLimit}`, fetcher);
+    // const { data: followingsData, error: followingError} = userSWR(`${backUrl}/user/followings?limit=${followingsLimit}`, fetcher);
 
     useEffect(() => {
         dispatch({
             type: LOAD_FOLLOWERS_REQUEST
-        })
-    })
+        });
+        dispatch({
+            type: LOAD_FOLLOWINGS_REQUEST
+        });
+    },[]);
 
     useEffect(() => { // 로그인 안하면 프로필 안보이게 바로 home으로 이동
         if(!(me && me.id)) {
@@ -45,10 +50,10 @@ const Profile = () => {
         return '내 정보 로딩중...';
     }
 
-    if(followerError || followingError) {
-        console.error(followerError || followingError);
-        return <div>팔로잉/팔로워 로딩 중 에러가 발생합니다.</div>
-    }
+    // if(followerError || followingError) {
+    //     console.error(followerError || followingError);
+    //     return <div>팔로잉/팔로워 로딩 중 에러가 발생합니다.</div>
+    // }
 
     return (
         <>
@@ -57,8 +62,8 @@ const Profile = () => {
         </Head>
         <AppLayout>
             <NicknameEditForm/>
-            <FollowList header="팔로잉" data={me.Followings} onClickMore={loadMoreFollowings} loading={!followingsData && !followingError}/>
-            <FollowList header="팔로워" data={me.Followers} onClickMore={loadMoreFollowers} loading={!followersData && !followerError}/>
+            <FollowList header="팔로잉" data={me.Followings} onClickMore={loadMoreFollowings}/>
+            <FollowList header="팔로워" data={me.Followers} onClickMore={loadMoreFollowers}/>
         </AppLayout>
         </>
     )

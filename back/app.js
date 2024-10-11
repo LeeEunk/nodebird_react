@@ -7,6 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 const morgan = require('morgan');
+const path = require('path');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -35,8 +36,10 @@ app.use(cors({
     origin: 'http://localhost:3060', // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
     credentials: true, // 기본값은 false임, 이게 트루면 origin을 정확한 주소로 표기해야 함
 }));
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
+
+app.use('/', express.static(path.join(__dirname, 'uploads'))) // image 백엔드 서버로 보낼때, os 차이때문에 경로의 문제가 될 수 있으므로 join을 함
+app.use(express.json()) //axios로 데이터 보낼때
+app.use(express.urlencoded({ extended: true })); //multi-part가 아닌 일반폼으로 데이터 보낼때
 // cookie 설정 -> random한 토큰값 전달 (개인정보 해킹을 막기 위함) -> 브라우저는 누구나 값을 읽을 수 있으므로 해킹에 취약하므로
 app.use(cookieParser(process.env.COOKIE_SECRET));
 // session 설정 -> 쿠키값과 세션값을 연결하기 위해 토큰값을 들고 있음
