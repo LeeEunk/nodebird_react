@@ -200,6 +200,7 @@ const reducer = (state = initialState, action) => {
                     draft.mainPosts.unshift(action.data);// dummyPost를 앞에다가 추가해야 신규 게시물이 맨앞에서 보임
                     draft.addPostLoading = false;
                     draft.addPostDone = true;
+                    draft.imagePaths = [];
                     break;
             case ADD_POST_FAILURE:
                 draft.addPostLoading = false;

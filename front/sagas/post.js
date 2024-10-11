@@ -100,7 +100,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) { //generate X
-    return axios.post('/post', {content: data });
+    return axios.post('/post', data); // formData는 {} 로 감싸면 안됨
 }
 
 function* addPost(action) {
