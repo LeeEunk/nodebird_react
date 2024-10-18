@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         // RetweetId
     }, {
+        modelName: 'Post',
+        tableName: 'posts',
         charset: 'utf8mb4', //이모티콘 넣을려면 mb4도 넣어줘야함
         collate: 'utf8mb4_general_ci', // 한글 저장
     });

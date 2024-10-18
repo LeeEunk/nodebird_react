@@ -10,8 +10,14 @@ import { useInView } from 'react-intersection-observer';
 const Home = () => {
     const dispatch = useDispatch();
     const {me} = useSelector((state) => state.user);
-    const {mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+    const {mainPosts, hasMorePosts, loadPostsLoading, retweetError } = useSelector((state) => state.post);
     const [ref, inView] = useInView();
+
+    useEffect(() => {
+        if(retweetError){
+          alert(retweetError);
+        }
+      },[retweetError]);
 
     useEffect (() => {
         dispatch({
@@ -24,7 +30,7 @@ const Home = () => {
 
     useEffect( () => {
         if (inView && hasMorePosts && !loadPostsLoading) {
-            const lastId = mainPosts[mainPosts.length - 1]?.id;
+            const lastId = mainPosts[mainPosts.length - 1]?.id; //마지막 게시글의 id
             dispatch({
                 type: LOAD_POSTS_REQUEST,
                 lastId,

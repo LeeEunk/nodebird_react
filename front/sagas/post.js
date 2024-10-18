@@ -13,6 +13,9 @@ import {
      REMOVE_POST_FAILURE, 
      REMOVE_POST_REQUEST,
      REMOVE_POST_SUCCESS,
+     RETWEET_FAILURE,
+     RETWEET_REQUEST,
+     RETWEET_SUCCESS,
      UNLIKE_POST_FAILURE,
      UNLIKE_POST_REQUEST,
      UNLIKE_POST_SUCCESS,
@@ -21,6 +24,25 @@ import {
      UPLOAD_IMAGES_SUCCESS} from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 // import shortId from "shortid";
+function retweetAPI(data) { //generate X
+    return axios.post(`/post/${data}/retweet`);
+}
+
+function* retweet(action) {
+    try {
+        const result = yield call(retweetAPI, action.data) 
+        yield put({ //put은 action을 dispatch
+            type: RETWEET_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.err(err);
+        yield put({
+            type: RETWEET_FAILURE,
+            error: err.response.data,
+        });
+    }
+}
 
 function uploadImagesAPI(data) { //generate X
     return axios.post('/post/images', data);
@@ -36,7 +58,7 @@ function* uploadImages(action) {
     } catch (err) {
         yield put({
             type: UPLOAD_IMAGES_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
@@ -55,7 +77,7 @@ function* likePost(action) {
     } catch (err) {
         yield put({
             type: LIKE_POST_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
@@ -74,14 +96,14 @@ function* unlikePost(action) {
     } catch (err) {
         yield put({
             type: UNLIKE_POST_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
 
 
-function loadPostsAPI(data) { //generate X
-    return axios.get('/posts', data);
+function loadPostsAPI(lastId) { //generate X
+    return axios.get(`/posts?lastId=${lastId || 0}`); //get방식은 데이터 캐싱도 가능
 }
 
 function* loadPosts(action) {
@@ -94,7 +116,7 @@ function* loadPosts(action) {
     } catch (err) {
         yield put({
             type: LOAD_POSTS_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
@@ -122,7 +144,7 @@ function* addPost(action) {
     } catch (err) {
         yield put({
             type: ADD_POST_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
@@ -151,7 +173,7 @@ function* removePost(action) {
         console.error(err);
         yield put({
             type: REMOVE_POST_FAILURE,
-            data: err.response.data,
+            error: err.response.data,
         })
     }
 }
@@ -183,6 +205,10 @@ function* addComment(action) {
 //-> 동시에 로딩된거만 취소됨(단, 프론터서버에서만 적용, 그래서 백엔드에서 2번 저장되지 않았는지 체크 필요)
 // 요청은 2번간거고 응답만 마지막꺼 한개로 받음, 요청은 취소가 안됨
 // 만약 첫번째꺼만 하고 싶으면 takeLeading도 있음
+function* watchRetweet() {
+    yield takeLatest(RETWEET_REQUEST, retweet);
+}
+
 function* watchUploadImages() {
     yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
@@ -214,6 +240,7 @@ function* watchAddComment() {
 
 export default function* postSaga() {
     yield all([
+        fork(watchRetweet),
         fork(watchUploadImages),
         fork(watchLikePost),
         fork(watchUnlikePost),

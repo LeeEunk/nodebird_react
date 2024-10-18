@@ -30,6 +30,9 @@ export const initialState = {
     uploadImagesLoading: false,
     uploadImagesDone: false,
     uploadImagesError: null,
+    retweetLoading: false,
+    retweetDone: false,
+    retweetError: null,
 };
 
 // export const generateDummyPost = (number) => Array(number).fill().map(() => ({
@@ -79,6 +82,10 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
+export const RETWEET_REQUEST = 'RETWEET_REQUEST';
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
+export const RETWEET_FAILURE = 'RETWEET_FAILURE';
+
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 // 동적 액션 트레이
@@ -121,6 +128,22 @@ const reducer = (state = initialState, action) => {
         switch (action.type) {
             case REMOVE_IMAGE:
                 draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data); //front에서만 제거
+                break;
+            
+            case RETWEET_REQUEST:
+                    draft.retweetLoading = true;
+                    draft.retweetDone = false;
+                    draft.retweetError = null;
+                    break;
+            case RETWEET_SUCCESS:{
+                    draft.mainPosts.unshift(action.data);
+                    draft.retweetLoading = false;
+                    draft.retweetDone = true;
+                    break;
+                }
+            case RETWEET_FAILURE:
+                draft.retweetLoading = false;
+                draft.retweetError =  action.error;
                 break;
 
             case UPLOAD_IMAGES_REQUEST:
@@ -179,11 +202,11 @@ const reducer = (state = initialState, action) => {
                     draft.loadPostsError = null;
                     break;
             case LOAD_POSTS_SUCCESS:
-                    draft.mainPosts = draft.mainPosts.concat(action.data); // 기존 게시물에 추가
                     draft.loadPostsLoading = false;
                     draft.loadPostsDone = true;
+                    draft.mainPosts = draft.mainPosts.concat(action.data); // 기존 게시물에 추가
                     // draft.hasMorePosts = draft.mainPosts.length < 50; //최대 50개의 게시물만 보임
-                    draft.hasMorePosts = action.data.length === 10;
+                    draft.hasMorePosts = action.data.length === 10; //10의 배수인 게시물이면 hasmorepost가 false로 안바뀐다는 단점이 있음
                     break;
             case LOAD_POSTS_FAILURE:
                 draft.loadPostsLoading = false;
