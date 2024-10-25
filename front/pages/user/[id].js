@@ -7,11 +7,11 @@ import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 
 import axios from 'axios';
+import { LOAD_POSTS_REQUEST, LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
+import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from '../../reducers/user';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
 import AppLayout from '../../components/AppLayout';
-import { LOAD_POSTS_REQUEST } from '../../reducers/post';
-import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from '../../reducers/user';
 
 const User = () => {
     const dispatch = useDispatch();
@@ -73,8 +73,7 @@ const User = () => {
                             title={userInfo.nickname}
                         />
                         </Card>
-                ) : null
-            }
+                ) : null}
             {mainPosts.map((c) => (
                 <PostCard key={c.id} post={c} />
             ))}

@@ -20,7 +20,6 @@ const Post = () => {
 
     return (
         <AppLayout>
-            
             <Head>
                 <title>
                     {singlePost.User.nickname}님의 글

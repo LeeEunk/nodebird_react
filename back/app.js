@@ -12,6 +12,7 @@ const path = require('path');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
+const hashtagRouter = require('./routes/hashtag');
 const db = require('./models');
 const app = express();
 const passportConfig = require('./passport');
@@ -64,6 +65,7 @@ app.get('/api', (req, res) => {
 app.use('/posts', postsRouter);
 app.use('/post', postRouter);
 app.use('/user', userRouter);
+app.use('/hashtag', hashtagRouter);
 
 // // default로 에러처리 미들웨어가 장착되어있음 커스터마이징하려면 여기를 수정하면 됨
 // app.use((err, req, res, next) => {
