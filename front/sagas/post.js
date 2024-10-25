@@ -110,19 +110,20 @@ function* unlikePost(action) {
     }
 }
 
-function loadHashtagPostsAPI(lastId) { //generate X
-    return axios.get(`/hashtag/${data}?lastId=${lastId || 0}`); //get방식은 데이터 캐싱도 가능
+function loadHashtagPostsAPI(data, lastId) { //generate X
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`); //get방식은 데이터 캐싱도 가능
 }
 
 function* loadHashtagPosts(action) {
     try {
         console.log('logHashtag console');
-        const result = yield call(loadHashtagPostsAPI, action.data, action.lastId) 
+        const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
         yield put({ //put은 action을 dispatch
             type: LOAD_HASHTAG_POSTS_SUCCESS,
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOAD_HASHTAG_POSTS_FAILURE,
             error: err.response.data,
@@ -142,6 +143,7 @@ function* loadUserPosts(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOAD_USER_POSTS_FAILURE,
             error: err.response.data,
@@ -162,6 +164,7 @@ function* loadPosts(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOAD_POSTS_FAILURE,
             error: err.response.data,
@@ -181,6 +184,7 @@ function* loadPost(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOAD_POST_FAILURE,
             error: err.response.data,
@@ -209,6 +213,7 @@ function* addPost(action) {
             data: result.data.id,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: ADD_POST_FAILURE,
             error: err.response.data,

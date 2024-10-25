@@ -1,3 +1,5 @@
+const DataTypes = require('sequelize');
+const {Model} = DataTypes;
 
 module.exports = (sequelize, DataTypes) => {
     const Hashtag = sequelize.define('Hashtag', { // MySQL에는 Hashtags 테이블 생성

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/:hashtag', async( req, res, next) => { //GET /hashtag/노드
     try{
-        const where = { UserId: req.params.userId };
+        const where = {};
         if (parseInt(req.query.lastId, 10)) { //초기 로딩이 아닐 때
             where.id = {[Op.lt] : parseInt(req.query.lastId, 10)}
         } // 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
@@ -16,7 +16,7 @@ router.get('/:hashtag', async( req, res, next) => { //GET /hashtag/노드
             order: [['createdAt', 'DESC']],
             include: [{
                 model: Hashtag,
-                where: {name:req.params.hashtag}
+                where: { name:decodeURIComponent(req.params.hashtag) },
             },{
                 model: User,
                 attributes: ['id', 'nickname'],
@@ -50,3 +50,5 @@ router.get('/:hashtag', async( req, res, next) => { //GET /hashtag/노드
         next(error);
     }
 });
+
+module.exports = router;
