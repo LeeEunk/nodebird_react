@@ -1,17 +1,19 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { Avatar, Button, Card, Popover, List} from 'antd';
+import { Avatar, Button, Card, Popover, List } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from '@ant-design/icons'
-
-import PostImages from './PostImages';
-import PostCardContent from './PostCardContent';
-import CommentForm from './CommentForm';
 import Link from 'next/link';
 import moment from 'moment';
+
+import PostImages from './PostImages';
+import CommentForm from './CommentForm';
+import PostCardContent from './PostCardContent';
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
+
+moment.locale('ko');
 
 
 const PostCard = ({ post }) => {
@@ -19,9 +21,10 @@ const PostCard = ({ post }) => {
   const { removePostLoading } = useSelector((state) => state.post);
   // const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const { me } = useSelector((state) => state.user);
+  // const { me } = useSelector((state) => state.user);
   // const id = me && me.id;
   const id = useSelector((state) => state.user.me?.id);
+  const [editMode, setEditMode] = useState(false);
 
   const onLike = useCallback(() => {
     if (!id) {
@@ -159,7 +162,6 @@ PostCard.propTypes = {
   post: PropTypes.shape({
     id: PropTypes.number,
     User: PropTypes.object,
-    UserId: PropTypes.number,
     content: PropTypes.string,
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
@@ -170,4 +172,4 @@ PostCard.propTypes = {
   }).isRequired,
 };
 
-export default PostCard
+export default PostCard;

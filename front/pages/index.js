@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
 import AppLayout from '../components/AppLayout';
 import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user'
 import { useInView } from 'react-intersection-observer';
+import wrapper from '../store/configureStore';
+import axios from 'axios';
 
+// 브라우저와 프론트서버에서 실행되는 부분
 const Home = () => {
     const dispatch = useDispatch();
     const {me} = useSelector((state) => state.user);
@@ -19,14 +23,6 @@ const Home = () => {
         }
       },[retweetError]);
 
-    useEffect (() => {
-        dispatch({
-            type: LOAD_MY_INFO_REQUEST,
-        });
-        dispatch({
-            type: LOAD_POSTS_REQUEST,
-        });
-    },[]);
 
     useEffect( () => {
         if (inView && hasMorePosts && !loadPostsLoading) {
@@ -70,5 +66,28 @@ const Home = () => {
         </AppLayout>
     );
 }
+
+// 프론트 서버에서만 실행되는 부분
+// 이 부분이 Home보다 먼저 실행됨
+export const getServerSideProps = wrapper.getServerSideProps(async(context) => {
+    console.log(context);
+    const cookie = context.req? context.req.headers.cookie : '';
+    // 쿠키 안쓰면 빈 값;
+    axios.defaults.headers.Cookie = '';
+    // 막기위해서는
+    if (context.req && cookie ) {
+        axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
+    } 
+    
+    context.store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch({
+        type: LOAD_POSTS_REQUEST,
+    });
+    // SUCCESS될때까지 기다려줌
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+});
 
 export default Home;

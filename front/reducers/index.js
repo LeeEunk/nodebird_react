@@ -39,21 +39,20 @@ import { combineReducers } from 'redux';
 
 // (이전상태, 액션) => 다음상태
 // combineReducers를 이용하는 이유는 함수와 함수를 합쳐줘야하기 때문
-const rootReducer = combineReducers({
-    index : (state = {}, action) => {
-    // action은 객체임
+const rootReducer = (state, action) => {
     switch(action.type) {
         case HYDRATE:
             console.log('HYDRATE', action);
-            return { ...state, ...action.payload };
-
+            return action.payload;
         // 초기화
-        default: 
-            return state;
+        default:  {
+            const combinedReducer = combineReducers({
+                user,
+                post,
+            });
+            return combinedReducer(state, action);
+        }
     }
-    },
-    user,
-    post,
-});
+};
 
 export default rootReducer;

@@ -13,6 +13,7 @@ const router = express.Router();
 
 // 사용자 정보 복구 -> 새로고침할때마다 로그인 풀림 방지를 위함
 router.get('/', async(req, res, next) => { // GET /user
+    console.log(req.headers);
     try {
         if(req.user){
             const fullUserWithoutPassword = await User.findOne({ // 비밀번호 없이 브라우저에 값 전달하기 위해 새로 생성
@@ -42,6 +43,44 @@ router.get('/', async(req, res, next) => { // GET /user
         next(error);
     }
 });
+
+router.get('/:userId', async(req, res, next) => { // GET /user/1
+    console.log(req.headers);
+    try {
+            const fullUserWithoutPassword = await User.findOne({ // 비밀번호 없이 브라우저에 값 전달하기 위해 새로 생성
+                where: { id: req.params.userId },
+                attributes: { 
+                    exclude: ['password']
+                },
+                include: [{
+                    model: Post,
+                    attributes: ['id'], // 용량을 너무 많이 차지하므로 id 값만 지정해서 가져옴 -> 숫자만 셀거니깐
+                }, {
+                    model: User,
+                    as: 'Followings',
+                    attributes: ['id'],
+                },{
+                    model: User,
+                    as: 'Followers',
+                    attributes: ['id'],
+                }]
+            })
+            if(fullUserWithoutPassword) {
+                //시퀄라이즈에서 보내준 데이터는 json이 아니기때문에 먼저 변환해주기
+                const data = fullUserWithoutPassword.toJSON();
+                data.Posts = data.Posts.length; //개인정보 침해 예방
+                data.Followings = data.Followings.length;
+                data.Followers = data.Followers.length;
+                res.status(200).json(data);
+            } else {
+            res.status(404).json('존재하지 않는 사용자입니다.');
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
 
 router.get('/followers', isLoggedIn, async (req, res, next) => { //GET /user/followers
     try{

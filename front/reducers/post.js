@@ -7,6 +7,7 @@ import {produce} from 'immer';
 export const initialState = {
     // 대문자로 시작하는 애들은 서버에서 주는 걸 의미
     mainPosts: [],
+    singlePost: null,
     imagePaths: [],
     hasMorePosts: true,
     likePostLoading: false,
@@ -15,6 +16,9 @@ export const initialState = {
     unlikePostLoading: false,
     unlikePostDone: false,
     unlikePostError: null,
+    loadPostLoading: false,
+    loadPostDone: false,
+    loadPostError: null,
     loadPostsLoading: false,
     loadPostsDone: false,
     loadPostsError: null,
@@ -66,9 +70,17 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 
+export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -195,6 +207,25 @@ const reducer = (state = initialState, action) => {
                 draft.unlikePostLoading = false;
                 draft.unlikePostError =  action.error;
                 break;
+
+            case LOAD_POST_REQUEST:
+                    draft.loadPostLoading = true;
+                    draft.loadPostDone = false;
+                    draft.loadPostError = null;
+                    break;
+            case LOAD_POST_SUCCESS:
+                    draft.loadPostLoading = false;
+                    draft.loadPostDone = true;
+                    draft.singlePost = action.data;
+                    break;
+            case LOAD_POST_FAILURE:
+                draft.loadPostsLoading = false;
+                draft.loadPostsError =  action.error;
+                break;
+            case LOAD_USER_POSTS_REQUEST:
+            case LOAD_USER_POSTS_SUCCESS:
+            case LOAD_USER_POSTS_FAILURE:
+
 
             case LOAD_POSTS_REQUEST:
                     draft.loadPostsLoading = true;
