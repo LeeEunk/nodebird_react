@@ -6,7 +6,10 @@ import {
      generateDummyPost, 
      LIKE_POST_FAILURE, 
      LIKE_POST_REQUEST, 
-     LIKE_POST_SUCCESS, 
+     LIKE_POST_SUCCESS,
+     LOAD_POST_FAILURE, 
+     LOAD_POST_REQUEST, 
+     LOAD_POST_SUCCESS,  
      LOAD_POSTS_FAILURE, 
      LOAD_POSTS_REQUEST, 
      LOAD_POSTS_SUCCESS, 
@@ -121,6 +124,25 @@ function* loadPosts(action) {
     }
 }
 
+function loadPostAPI(data) { 
+    return axios.get(`/post/${data}`); 
+}
+
+function* loadPost(action) {
+    try {
+        const result = yield call(loadPostAPI, action.data) 
+        yield put({ //put은 action을 dispatch
+            type: LOAD_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        yield put({
+            type: LOAD_POST_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 function addPostAPI(data) { //generate X
     return axios.post('/post', data); // formData는 {} 로 감싸면 안됨
 }
@@ -221,8 +243,12 @@ function* watchUnlikePost() {
     yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function* watchLoadPost() {
+    yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 function* watchLoadPosts() {
-    yield throttle(2000, LOAD_POSTS_REQUEST, loadPosts);
+    yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
 
 function* watchAddPost() {
@@ -244,6 +270,7 @@ export default function* postSaga() {
         fork(watchUploadImages),
         fork(watchLikePost),
         fork(watchUnlikePost),
+        fork(watchLoadPost),
         fork(watchAddPost),
         fork(watchLoadPosts),
         fork(watchRemovePost),

@@ -81,19 +81,19 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
         where: {id: post.id},
         include: [{
             model: Image,
-        }, {
+        },{
             model: Comment,
-            include: [{ // 댓글 작성자
-                model: User,
-                atrributes: ['id', 'nicknanme']
+            include:[{
+                model: User, // 댓글 작성자
+                attributes:['id', 'nickname'],
+            },{
+                model: User, // 게시물 작성자
+                attributes: ['id', 'nickname'],
+            },{
+                model: User, //좋아요 누른 사람
+                as:'Likers',
+                attributes:['id'],
             }]
-        }, {
-            model: User, // 게시글 작성자
-            attributes: ['id', 'nickname'],
-        }, {
-            model: User, // 좋아요 누른 사람
-            as: 'Likers',
-            attributes: ['id'],
         }]
     })
     res.status(201).json(fullPost);
@@ -110,6 +110,50 @@ router.post('/images', isLoggedIn, upload.array('image'),  (req,res,next) => { /
     console.log(req.files);
     res.json(req.files.map((v) => v.filename));
 });
+
+router.get('/:postId', async (req, res, next ) => { // GET /post/1
+    try {
+        const post = await Post.findOne({
+            where: { id: req.params.postId },
+        });
+        if (!post) {
+            return res.status(404).send('존재하지 않는 게시글입니다.');
+        }
+       const fullPost = await Post.findOne({
+        where: {id: post.id},
+        include: [{
+            model: Post,
+            as: 'Retweet',
+            include: [{
+                model: User,
+                attributes: ['id', 'nickname'],
+            },{
+                model:Image,
+            }]
+        },{
+            model: User,
+            attributes: ['id', 'nickname'],
+        },{
+            model: User,
+            as: 'Likers', //좋아요 누른 사람
+            attributes: ['id'],
+        },{
+            model: Image,
+        },{
+            model: Comment,
+            include:[{
+                model: User,
+                attributes: ['id', 'nickname']
+            }],
+        }],
+       })
+        res.status(200).json(fullPost);
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
 
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST /post/1/retweet
     try {

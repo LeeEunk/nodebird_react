@@ -32,6 +32,7 @@ export const initialState = {
     removeFollowersDone: false,
     removeFollowersError: null,
     me : null,
+    userInfo:null,
     signUpData: {},
     loginData: {},    
 }
@@ -168,8 +169,8 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
 
             case LOAD_MY_INFO_SUCCESS : 
                 draft.loadMyInfoLoading= false;
-                draft.loadMyInfoDone= true;
                 draft.me = action.data;
+                draft.loadMyInfoDone= true;
                 break;
         
             case LOAD_MY_INFO_FAILURE : 
@@ -203,7 +204,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
             case LOAD_USER_SUCCESS : 
                 draft.loadUserLoading= false;
                 draft.loadUserDone= true;
-                draft.userInfo = action.data;
+                draft.userInfo = action.data; //상대방 정보 가져올때 사용
                 break;
             
             case LOAD_USER_FAILURE : 

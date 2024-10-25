@@ -116,7 +116,7 @@ function* changeNickname(action) {
     }
 }
 
-function loadUserAPI() { //get, delete는 data가 없음
+function loadUserAPI(data) { //get, delete는 data가 없음
     return axios.get(`/user/${data}`);
 }
 
@@ -142,9 +142,9 @@ function loadMyInfoAPI() { //get, delete는 data가 없음
     return axios.get('/user');
 }
 
-function* loadMyInfo(action) {
+function* loadMyInfo() {
     try {
-        const result = yield call(loadMyInfoAPI, action.data);
+        const result = yield call(loadMyInfoAPI);
         // yield delay(1000);
         yield put({
             type: LOAD_MY_INFO_SUCCESS,
@@ -188,12 +188,31 @@ function* logIn(action) {
 }
 
 function logOutAPI() { //generate X
-    return axios.post('/user/logout');
+    axios.post('/user/logout')
+    
+  .then((response) => {
+    console.log('Response:', response);
+  })
+  .catch((error) => {
+    if (error.response) {
+      // 서버가 2xx 이외의 응답을 반환한 경우
+      console.log('Error data:', error.response.data);
+      console.log('Error status:', error.response.status);
+      console.log('Error headers:', error.response.headers);
+    } else if (error.request) {
+      // 요청이 만들어졌으나 응답이 없는 경우
+      console.log('No response received:', error.request);
+    } else {
+      // 요청을 만들다가 발생한 에러
+      console.log('Error message:', error.message);
+    }
+    console.log('Error config:', error.config);
+  });
 }
 
 function* logOut() {
     try {
-        yield call(logOutAPI) // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
+        yield call(logOutAPI); // 요청의 결과값을 받음 fork는 비동기 함수 호출이고 call은 동기함수 호출임 
         // yield가 await과 비슷 blocking
         // 동기이기때문에 .then 처럼 결과값을 받을 때까지 기다려줌, 다음 메소드 실행안함
 
@@ -202,10 +221,11 @@ function* logOut() {
             type: LOG_OUT_SUCCESS,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LOG_OUT_FAILURE,
             error: err.response.data,
-        })
+        });
     }
 }
 
@@ -304,7 +324,7 @@ function* watchFollow() {
 }
 
 function* watchUnfollow() {
-    yield takeEvery(UNFOLLOW_REQUEST, unfollow);
+    yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
 
 function* watchLogIn() {
@@ -313,7 +333,7 @@ function* watchLogIn() {
 }
 
 function* watchLogOut() {
-    yield takeEvery(LOG_OUT_REQUEST, logOut);
+    yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 function* watchSignUp() {

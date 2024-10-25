@@ -137,6 +137,23 @@ const Signup = () => {
     )
 };
 
-
+export const getServerSideProps = wrapper.getServerSideProps(async(context) => {
+    console.log('getServerSideProps start');
+    console.log(context.req.headers);
+    const cookie = context.req? context.req.headers.cookie : '';
+    // 쿠키 안쓰면 빈 값;
+    axios.defaults.headers.Cookie = '';
+    // 막기위해서는
+    if (context.req && cookie ) {
+        axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
+    } 
+    
+    context.store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+    });
+    // SUCCESS될때까지 기다려줌
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+});
 
 export default Signup;
