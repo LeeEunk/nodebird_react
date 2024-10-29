@@ -151,10 +151,10 @@ function* loadMyInfo() {
             data: result.data,
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error in loadMyInfo saga:', err);
         yield put({
             type: LOAD_MY_INFO_FAILURE,
-            error: err.response.data,
+            error: err.message,
         })
     }
 }

@@ -45,7 +45,7 @@ function* retweet(action) {
             data: result.data,
         });
     } catch (err) {
-        console.err(err);
+        console.error(err);
         yield put({
             type: RETWEET_FAILURE,
             error: err.response.data,
@@ -65,6 +65,7 @@ function* uploadImages(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: UPLOAD_IMAGES_FAILURE,
             error: err.response.data,
@@ -84,6 +85,7 @@ function* likePost(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: LIKE_POST_FAILURE,
             error: err.response.data,
@@ -103,6 +105,7 @@ function* unlikePost(action) {
             data: result.data,
         });
     } catch (err) {
+        console.error(err);
         yield put({
             type: UNLIKE_POST_FAILURE,
             error: err.response.data,
@@ -110,8 +113,8 @@ function* unlikePost(action) {
     }
 }
 
-function loadHashtagPostsAPI(data, lastId) { //generate X
-    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`); //get방식은 데이터 캐싱도 가능
+function loadHashtagPostsAPI(data, lastId) {
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`); 
 }
 
 function* loadHashtagPosts(action) {
@@ -167,7 +170,7 @@ function* loadPosts(action) {
         console.error(err);
         yield put({
             type: LOAD_POSTS_FAILURE,
-            error: err.response.data,
+            error: err.message,
         })
     }
 }
@@ -298,15 +301,15 @@ function* watchLoadPost() {
 }
 
 function* watchLoadUserPosts() {
-    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts);
+    yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
 
 function* watchLoadHashtagPosts() {
-    yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+    yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
 function* watchLoadPosts() {
-    yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
+    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 
 function* watchAddPost() {

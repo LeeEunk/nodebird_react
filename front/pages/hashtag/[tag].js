@@ -1,4 +1,4 @@
-//hashtag/[tag].js
+// hashtag/[tag].js
 
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +29,7 @@ const Hashtag = () => {
                 data: tag,
             });
         }
-    }, [inView, hasMorePosts, loadPostsLoading, mainPosts, tag]);
+    }, [inView, hasMorePosts, loadPostsLoading, mainPosts, tag],);
     
     return (
         <AppLayout>
