@@ -63,7 +63,7 @@ const PostForm = () => {
   return (
     // 멀티파트데이터는 보통 파일이나 이미지를 백엔드로 보낼때 사용됨 -> 사용하려면 npm i multer를 사용해야함
     <Form style={{ margin: '10px 0 20px'}} encType='multipart/form-data' onFinish={onSubmit}> 
-        <Input.TextArea value={text} onChange={onChangeText} maxLenth={140} placeholder="어떤 신기한 일이 있었나요?"/>
+        <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="어떤 신기한 일이 있었나요?"/>
         <div>
             <input type='file' name='image' multiple hidden ref={imageInput} onChange={onChangeImages} style={{display:" none"}} />
             <Button onClick={onClickImageUpload}>이미지 업로드</Button>

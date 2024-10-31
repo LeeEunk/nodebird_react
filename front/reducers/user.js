@@ -28,9 +28,9 @@ export const initialState = {
     loadFollowingsLoading: false, //팔로잉 시도중
     loadFollowingsDone: false,
     loadFollowingsError: null,
-    removeFollowersLoading: false, //팔로워 삭제 시도중
-    removeFollowersDone: false,
-    removeFollowersError: null,
+    removeFollowerLoading: false, //팔로워 삭제 시도중
+    removeFollowerDone: false,
+    removeFollowerError: null,
     me : null,
     userInfo:null,
     signUpData: {},
@@ -230,7 +230,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
                 break;
 
             case UNFOLLOW_REQUEST : 
-                console.log('reducer login');
+                console.log('reducer unfollow');
                 // 다음 스테이트로 값이 변경, initial state와는 다른 객체가 생김
                 draft.unfollowLoading= true;
                 draft.unfollowError= null;

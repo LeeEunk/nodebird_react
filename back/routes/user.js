@@ -41,6 +41,43 @@ router.get('/', async(req, res, next) => { // GET /user
     }
 });
 
+
+
+
+router.get('/followers', isLoggedIn, async (req, res, next) => { //GET /user/followers
+    try{
+        const user = await User.findOne({where: {id: req.user.id}}); // 나를 먼저 찾고
+        if( !user) {
+            res.status(403).send('없는 사람을 찾으려고 하시네요?');
+        }
+        const followers = await user.getFollowers({ // 나를 팔로워하는 사람을 찾음
+            limit: parseInt(req.query.limit, 10),
+
+        });
+        res.status(200).json(followers);
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+router.get('/followings', isLoggedIn, async (req, res, next) => { //GET /user/followings
+    try{
+        const user = await User.findOne({where: {id: req.user.id}});
+        if( !user) {
+            res.status(403).send('없는 사람을 찾으려고 하시네요?');
+        }
+        const followings = await user.getFollowings({
+            limit: parseInt(req.query.limit, 10),
+        });
+        res.status(200).json(followings);
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+});
+
+// middelware는 위에서 아래로 좌에서 우로 가는데 :/ wildcard로 읽혀서 이거를 먼저 통과해버림 그래서 최대한 맨 아래에 있는 것이 좋음 -> 404 error 요인
 router.get('/:userId', async(req, res, next) => { // GET /user/1
     console.log(req.headers);
     try {
@@ -73,39 +110,6 @@ router.get('/:userId', async(req, res, next) => { // GET /user/1
             res.status(404).json('존재하지 않는 사용자입니다.');
         }
     } catch (error) {
-        console.error(error);
-        next(error);
-    }
-});
-
-
-router.get('/followers', isLoggedIn, async (req, res, next) => { //GET /user/followers
-    try{
-        const user = await User.findOne({where: {id: req.user.id}}); // 나를 먼저 찾고
-        if( !user) {
-            res.status(403).send('없는 사람을 찾으려고 하시네요?');
-        }
-        const followers = await user.getFollowers({ // 나를 팔로워하는 사람을 찾음
-            limit: parseInt(req.query.limit, 10),
-        });
-        res.status(200).json(followers);
-    } catch(error) {
-        console.error(error);
-        next(error);
-    }
-});
-
-router.get('/followings', isLoggedIn, async (req, res, next) => { //GET /user/followings
-    try{
-        const user = await User.findOne({where: {id: req.user.id}});
-        if( !user) {
-            res.status(403).send('없는 사람을 찾으려고 하시네요?');
-        }
-        const followings = await user.getFollowings({
-            limit: parseInt(req.query.limit, 10),
-        });
-        res.status(200).json(followings);
-    } catch(error) {
         console.error(error);
         next(error);
     }
