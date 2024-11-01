@@ -108,7 +108,7 @@ const PostCard = ({ post }) => {
             <Card
               cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}
             >
-              <div style={{ float: 'right'}}>{moveMessagePortToContext(post.createdAt).format('YYYY.MM.DD')}</div>  
+              <div style={{ float: 'right'}}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>  
             <Card.Meta 
             avatar={(
               <Link href={`/user/${post.Retweet.User.id}`}>

@@ -299,7 +299,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => { //
                 draft.changeNicknameError= action.error;
                 break;
 
-            case CHANGE_NICKNAME_REQUEST : 
+            case SIGN_UP_REQUEST : 
                 draft.signUpLoading= true;
                 draft.signUpDone= false;
                 draft.signUpError= null;

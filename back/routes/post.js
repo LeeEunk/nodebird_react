@@ -9,28 +9,6 @@ const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-
-router.get('/', async(req, res, next) => { // GET /posts
-    try{
-        const posts = await Post.findAll({
-            limit: 10,
-            order: [['createdAt', 'DESC']],
-            include: [{
-                model: User,
-            }, {
-                model: Image,
-            }],
-        });
-        console.log(posts);
-        res.status(200).json(posts);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-
-});
-
-
 try {
     fs.accessSync('uploads');
     } catch(error) {
@@ -103,9 +81,9 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
     }
 });
 
+
 //array(여러개), single(한개), none(텍스트), fills(인풋창이 여러개일때)
 router.post('/images', isLoggedIn, upload.array('image'),  (req,res,next) => { //POST /post.images
-
     //multer는 app.js 장착하기보단 router마다 장착함 -> 폼마다 다르게 적용되기 때문
     console.log(req.files);
     res.json(req.files.map((v) => v.filename));
@@ -153,6 +131,7 @@ router.get('/:postId', async (req, res, next ) => { // GET /post/1
         next(error);
     }
 });
+
 
 
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST /post/1/retweet
@@ -222,6 +201,7 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST
     }
 });
 
+
 router.post('/:postId/comment', isLoggedIn, async (req, res, next ) => { // POST /post/comment
     try {
         const post = await Post.findOne({
@@ -249,6 +229,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next ) => { // POST
     }
 });
 
+
 router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { //PATCH /post/1/like
     try {
         const post = await Post.findOne({ where: {id: req.params.postId}});
@@ -263,6 +244,9 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { //PATCH /p
     }
 });
 
+
+
+
 router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { //DELETE /post/1/like
     try {
         const post = await Post.findOne({ where: {id: req.params.postId}});
@@ -276,6 +260,32 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { //DELETE 
         next(error);
     }
 });
+
+router.patch('/:postId', isLoggedIn, async(req, res,next) => { //PATCH /post/10
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
+    try{
+        await Post.update({
+            content: req.body.content
+        }, {
+            where: {
+                id: req.params.postId,
+                UserId: req.user.id,
+            },
+        });
+        const post = await Post.findOne({ where: { id: req.params.postId }});
+        if(hashtags) {
+            const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({
+                where: {name: tag.slice(1).toLowerCase()},
+            }))); // [[노드, true]. [리액트, true]]
+            await post.setHashTags(result.map((v) => v[0]));
+        }
+        res.status(200).json({ PostId: parseInt(req.params.postId, 10), content: req.body.content });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
 
 router.delete('/:postId', isLoggedIn, async (req, res, next) => { // DELETE /post/10
     try{

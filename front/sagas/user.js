@@ -179,7 +179,7 @@ function* logIn(action) {
             data: result.data,
         });
     } catch (err) {
-        console.error(err);
+        console.error("Login request failed:", error);
         yield put({
             type: LOG_IN_FAILURE,
             error: err.response.data,
@@ -191,7 +191,7 @@ function logOutAPI() { //generate X
     axios.post('/user/logout')
     
   .then((response) => {
-    console.log('Response:', response);
+    console.log('로그아웃 성공 Response:', response);
   })
   .catch((error) => {
     if (error.response) {

@@ -194,7 +194,7 @@ router.get('/:userId/posts', async( req, res, next) => { //GET /user/1/posts
     }
 });
 
-router.post('/login', isNotLoggedIn, (req, res, next) => { // 미들웨어 확장
+router.post('/login', isNotLoggedIn, (req, res, next) => { // 미들웨어 확장 //POST user/login
     passport.authenticate('local', (err, user, info) => {
         if(err) {
             // server error 발생 시
@@ -266,11 +266,13 @@ router.post('/', isNotLoggedIn, async(req, res, next)=> { //POST /user/
     }
 });
 
-router.post('/logout', isLoggedIn, (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => { //POST /user/logout
     req.logout();
     req.session.destroy();
-    res.send('ok');
-});
+    res.clearCookie('connect.sid'); // 세션 쿠키 제거
+    res.status(200).send('Successfully logged out'); // 로그아웃 완료 메시지 전송
+
+ });
 
 router.patch('/nickname', isLoggedIn, async (req, res, next ) => {
     try{

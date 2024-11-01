@@ -22,7 +22,7 @@ const Signup = () => {
     const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
 
     useEffect(() => { // 로그인 안하면 프로필 안보이게 바로 home으로 이동
-        if(!(me && me.id)) {
+        if((me && me.id)) {
             Router.replace('/'); // replace는 뒤로가기해도 이전페이지로 안돌아감
         }
     },[ me && me.id]);
@@ -88,7 +88,7 @@ const Signup = () => {
         dispatch({
             type: SIGN_UP_REQUEST,
             data: { email, password, nickname },
-        })
+        });
     }, [email, password, passwordCheck, term]);
     
     
@@ -138,7 +138,7 @@ const Signup = () => {
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(async(context) => {
-    console.log('getServerSideProps start');
+    console.log('회원가임의 getServerSideProps start');
     console.log(context.req.headers);
     const cookie = context.req? context.req.headers.cookie : '';
     // 쿠키 안쓰면 빈 값;
