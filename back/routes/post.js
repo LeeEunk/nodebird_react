@@ -34,8 +34,8 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
     try {
         const hashtags = req.body.content.match(/#[^\s#]+/g);
         const post = await Post.create({
-        content: req.body.content,
-        UserId: req.user.id,
+            content: req.body.content,
+            UserId: req.user.id,
     });
     if (hashtags) {
         // slice는 # 제거, findOrCreate는 중복 제거
@@ -44,7 +44,6 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
      }))); // [[노드, true]] [[리액트, true]]
      await post.addHashtags(result.map((v) => v[0]));
     }
-
     if(req.body.image) {
         if(Array.isArray(req.body.image)) { // 이미지를 여러개 올리면 image: [제로초.png, 부기초.png]
             const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image }))); // 한번에 sequelize되서 디비에 올림 -> 파일 주소만 올림
@@ -114,7 +113,7 @@ router.get('/:postId', async (req, res, next ) => { // GET /post/1
         },{
             model: User,
             as: 'Likers', //좋아요 누른 사람
-            attributes: ['id'],
+            attributes: ['id','nickname'],
         },{
             model: Image,
         },{
@@ -183,7 +182,7 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST
         },{
             model: User,
             as: 'Likers', //좋아요 누른 사람
-            attributes: ['id'],
+            attributes: ['id', 'nickname'],
         },{
             model: Image,
         },{
@@ -202,7 +201,7 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST
 });
 
 
-router.post('/:postId/comment', isLoggedIn, async (req, res, next ) => { // POST /post/comment
+router.post('/:postId/comment', isLoggedIn, async (req, res, next ) => { // POST /post/1/comment
     try {
         const post = await Post.findOne({
             where: { id: req.params.postId },
@@ -243,8 +242,6 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { //PATCH /p
         next(error);
     }
 });
-
-
 
 
 router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { //DELETE /post/1/like

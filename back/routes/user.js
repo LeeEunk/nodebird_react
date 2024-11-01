@@ -41,9 +41,6 @@ router.get('/', async(req, res, next) => { // GET /user
     }
 });
 
-
-
-
 router.get('/followers', isLoggedIn, async (req, res, next) => { //GET /user/followers
     try{
         const user = await User.findOne({where: {id: req.user.id}}); // 나를 먼저 찾고
