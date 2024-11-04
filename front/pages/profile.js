@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Router from 'next/router';
 import { END } from "redux-saga";
 import axios from 'axios';
+import useSWR from 'swr';
 
 import AppLayout from "../components/AppLayout";
 import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
 import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user'; 
-import useSWR from 'swr';
+
 
 import wrapper from "../store/configureStore";
 import { backUrl } from '../config/config';
@@ -82,19 +83,19 @@ const Profile = () => {
     )
 };
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async({ req }) => {
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
     console.log('getServerSideProps start');
-    console.log(req.headers);
-    const cookie = req? context.req.headers.cookie : '';
+    console.log(context.req.headers);
+    const cookie = context.req? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
-    if (req && cookie ) {
+    if (context.req && cookie ) {
         axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
     } 
-    store.dispatch({
+    context.store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
     });
     // SUCCESS될때까지 기다려줌
-    store.dispatch(END);
+    context.store.dispatch(END);
     console.log('getServerSideProps end');
     await context.store.sagaTask.toPromise();
 });
