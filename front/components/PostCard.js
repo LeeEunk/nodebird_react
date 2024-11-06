@@ -10,7 +10,7 @@ import moment from 'moment';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
+import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST, UPDATE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 moment.locale('ko');
@@ -25,6 +25,24 @@ const PostCard = ({ post }) => {
   // const id = me && me.id;
   const id = useSelector((state) => state.user.me?.id);
   const [editMode, setEditMode] = useState(false);
+
+  const onClickUpdate = useCallback(() => {
+    setEditMode(true);
+  },[]);
+
+  const onCancleUpdate = useCallback(() => {
+    setEditMode(false);
+  },[]);
+
+  const onChangePost = useCallback((editText) => () => {
+    dispatch({
+      type : UPDATE_POST_REQUEST,
+      data: {
+        PostId: post.id,
+        content: editText,
+      }
+    });
+  }, [post]);
 
   const onLike = useCallback(() => {
     if (!id) {
@@ -91,8 +109,8 @@ const PostCard = ({ post }) => {
               {/* 게시자와 게시물 작성자의 id가 나와 같으면 수정 삭제가 가능*/}
               {id && post.User.id === id ? (
               <>
-                {!post.RetweetId && <Button >수정</Button>}
-                <Button danger loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
+                {!post.RetweetId && <Button onClick={onClickUpdate}>수정</Button>}
+                <Button type='danger' loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
               </>
               ) :  <Button>신고</Button> }
             </Button.Group>
@@ -112,11 +130,11 @@ const PostCard = ({ post }) => {
             <Card.Meta 
             avatar={(
               <Link href={`/user/${post.Retweet.User.id}`}>
-                <a><Avatar>{post.User.nickname[0]}</Avatar></a>
+                <a><Avatar>{post.Retweet.User.nickname[0]}</Avatar></a>
                 </Link>
                 )}
             title={post.Retweet.User.nickname}
-            description={<PostCardContent postData={post.content}/>}
+            description={<PostCardContent postData={post.Retweet.content} onChangePost={onChangePost} onCancleUpdate={onCancleUpdate} />}
           />
             </Card>
           )
@@ -125,12 +143,12 @@ const PostCard = ({ post }) => {
             <div style={{float:'right'}}>{moment(post.createdAt).format('YYYY.MM.DD') } </div>
             <Card.Meta 
             avatar={(
-             <Link href={`/user/${post.User.id}`}>
+             <Link href={`/user/${post.User.id}`} prefetch={false}>
               <a><Avatar>{post.User.nickname[0]}</Avatar></a>
               </Link>
               )}
             title={post.User.nickname}
-            description={<PostCardContent postData={post.content}/>}
+            description={<PostCardContent editMode={editMode} onChangePost={onChangePost} onCancleUpdate={onCancleUpdate} postData={post.content}/>}
           />
           </>
           )
@@ -149,7 +167,7 @@ const PostCard = ({ post }) => {
                 <Comment
                   author={item.User.nickname}
                   avatar={(
-                    <Link href={{ pathname: '/user', query: {id:item.User.id}}} as={`/user/${item.User.id}`}>
+                    <Link href={{ pathname: '/user', query: {id:item.User.id}}} as={`/user/${item.User.id}`} prefetch={false}>
                       <a><Avatar>{item.User.nickname[0]}</Avatar></a>
                     </Link>
                   )}
@@ -161,7 +179,6 @@ const PostCard = ({ post }) => {
          </List>
         </div>
       )}
-
     </div>
   );
 };

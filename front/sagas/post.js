@@ -19,6 +19,9 @@ import {
      LOAD_POSTS_SUCCESS,  
      LOAD_POSTS_FAILURE, 
      LOAD_POSTS_REQUEST, 
+     UPDATE_POST_FAILURE, 
+     UPDATE_POST_REQUEST,
+     UPDATE_POST_SUCCESS,
      REMOVE_POST_FAILURE, 
      REMOVE_POST_REQUEST,
      REMOVE_POST_SUCCESS,
@@ -224,6 +227,26 @@ function* addPost(action) {
     }
 }
 
+function updatePostAPI(data) {
+    return axios.post(`/post/${data.PostId}`, data); 
+}
+
+function* updatePost(action) {
+    try {
+        const result = yield call(updatePostAPI, action.data); 
+        yield put({ //put은 action을 dispatch
+            type: UPDATE_POST_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: UPDATE_POST_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
 function removePostAPI(data) { //generate X
     return axios.delete(`/post/${data}`);
 }
@@ -316,6 +339,10 @@ function* watchAddPost() {
         yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchUpdatePost() {
+    yield takeLatest(UPDATE_POST_REQUEST, addPost);
+}
+
 function* watchRemovePost() {
     yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
@@ -332,6 +359,7 @@ export default function* postSaga() {
         fork(watchLikePost),
         fork(watchUnlikePost),
         fork(watchLoadPost),
+        fork(watchUpdatePost),
         fork(watchAddPost),
         fork(watchLoadUserPosts),
         fork(watchLoadHashtagPosts),

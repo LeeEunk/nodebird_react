@@ -25,6 +25,9 @@ export const initialState = {
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+    updatePostLoading: false,
+    updatePostDone: false,
+    updatePostError: null,
     removePostLoading: false,
     removePostDone: false,
     removePostError: null,
@@ -89,6 +92,10 @@ export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const UPDATE_POST_REQUEST = 'UPDATE_POST_REQUEST';
+export const UPDATE_POST_SUCCESS = 'UPDATE_POST_SUCCESS';
+export const UPDATE_POST_FAILURE = 'UPDATE_POST_FAILURE';
 
 export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
@@ -227,19 +234,14 @@ const reducer = (state = initialState, action) => {
                 draft.loadPostsError =  action.error;
                 break;
             case LOAD_USER_POSTS_REQUEST:
-            case LOAD_USER_POSTS_SUCCESS:
-            case LOAD_USER_POSTS_FAILURE:
-
             case LOAD_HASHTAG_POSTS_REQUEST:
-            case LOAD_HASHTAG_POSTS_SUCCESS:
-            case LOAD_HASHTAG_POSTS_FAILURE:
-
-
             case LOAD_POSTS_REQUEST:
                     draft.loadPostsLoading = true;
                     draft.loadPostsDone = false;
                     draft.loadPostsError = null;
                     break;
+            case LOAD_USER_POSTS_SUCCESS:
+            case LOAD_HASHTAG_POSTS_SUCCESS:
             case LOAD_POSTS_SUCCESS:
                     draft.loadPostsLoading = false;
                     draft.loadPostsDone = true;
@@ -247,6 +249,8 @@ const reducer = (state = initialState, action) => {
                     // draft.hasMorePosts = draft.mainPosts.length < 50; //최대 50개의 게시물만 보임
                     draft.hasMorePosts = action.data.length === 10; //10의 배수인 게시물이면 hasmorepost가 false로 안바뀐다는 단점이 있음
                     break;
+            case LOAD_USER_POSTS_FAILURE:
+            case LOAD_HASHTAG_POSTS_FAILURE:
             case LOAD_POSTS_FAILURE:
                 draft.loadPostsLoading = false;
                 draft.loadPostsError =  action.error;
@@ -267,6 +271,22 @@ const reducer = (state = initialState, action) => {
             case ADD_POST_FAILURE:
                 draft.addPostLoading = false;
                 draft.addPostError =  action.error;
+                break;
+
+            case UPDATE_POST_REQUEST:
+                    // ...state,
+                    draft.updateLoading = true;
+                    draft.updateDone = false;
+                    draft.updateError = null;
+                    break;
+            case UPDATE_POST_SUCCESS:
+                    draft.updateLoading = false;
+                    draft.updateDone = true;
+                    draft.mainPosts.find((v) => v.id === action.data.PostId).content = action.data.content;
+                    break;
+            case UPDATE_POST_FAILURE:
+                draft.updateLoading = false;
+                draft.updateError =  action.error;
                 break;
 
             case REMOVE_POST_REQUEST:

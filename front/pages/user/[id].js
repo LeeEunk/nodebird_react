@@ -82,8 +82,7 @@ const User = () => {
     );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => {
-    
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => { 
     const cookie = req ? req.headers.cookie : '';
     // 쿠키 안쓰면 빈 값;
     axios.defaults.headers.Cookie = '';
