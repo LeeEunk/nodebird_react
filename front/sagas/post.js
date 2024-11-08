@@ -68,10 +68,10 @@ function* uploadImages(action) {
             data: result.data,
         });
     } catch (err) {
-        console.error(err);
+        console.error(err.response?.data || err.message);
         yield put({
             type: UPLOAD_IMAGES_FAILURE,
-            error: err.response.data,
+            error:  err.response?.data || 'Upload failed',
         })
     }
 }
@@ -219,10 +219,10 @@ function* addPost(action) {
             data: result.data.id,
         });
     } catch (err) {
-        console.error(err);
+        console.error('Add Post Error',err);
         yield put({
             type: ADD_POST_FAILURE,
-            error: err.response.data,
+            error: err.response?.data || 'Unknown error',
         })
     }
 }
@@ -340,7 +340,7 @@ function* watchAddPost() {
 }
 
 function* watchUpdatePost() {
-    yield takeLatest(UPDATE_POST_REQUEST, addPost);
+    yield takeLatest(UPDATE_POST_REQUEST, updatePost);
 }
 
 function* watchRemovePost() {

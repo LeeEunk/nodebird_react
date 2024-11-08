@@ -44,94 +44,79 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
      }))); // [[노드, true]] [[리액트, true]]
      await post.addHashtags(result.map((v) => v[0]));
     }
-    if(req.body.image) {
-        if(Array.isArray(req.body.image)) { // 이미지를 여러개 올리면 image: [제로초.png, 부기초.png]
-            const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image }))); // 한번에 sequelize되서 디비에 올림 -> 파일 주소만 올림
-            await post.addImages(images);
-            // 파일은 보통 s3해서 캐싱해서 cdn에 올려 성능을 최적화하고 db는 파일에 접근할 수 있는 주소만 갖고 있음
-        } else { // 이미지를 하나만 올리면 image: eunkk.png -> 배열 x
-            const image = await Image.create({ src: req.body.image });
-            await post.addImages(image);
+    if (req.body.image) {
+        if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+          const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+          await post.addImages(images);
+        } else { // 이미지를 하나만 올리면 image: eunkk.png
+          const image = await Image.create({ src: req.body.image });
+          await post.addImages(image);
         }
-    }
-    const fullPost = await Post.findOne({
-        where: {id: post.id},
+      }
+      const fullPost = await Post.findOne({
+        where: { id: post.id },
         include: [{
-            model: Image,
-        },{
-            model: Comment,
-            include:[{
-                model: User, // 댓글 작성자
-                attributes:['id', 'nickname'],
-            },{
-                model: User, // 게시물 작성자
-                attributes: ['id', 'nickname'],
-            },{
-                model: User, //좋아요 누른 사람
-                as:'Likers',
-                attributes:['id'],
-            }]
+          model: Image,
+        }, {
+          model: Comment,
+          include: [{
+            model: User, // 댓글 작성자
+            attributes: ['id', 'nickname'],
+          }],
+        }, {
+          model: User, // 게시글 작성자
+          attributes: ['id', 'nickname'],
+        }, {
+          model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id'],
         }]
-    })
+      })
     res.status(201).json(fullPost);
     } catch (error) {
         console.error(error);
+        res.status(500).send('Internal Server Error');
         next(error);
     }
 });
 
 
 //array(여러개), single(한개), none(텍스트), fills(인풋창이 여러개일때)
-router.post('/images', isLoggedIn, upload.array('image'),  (req,res,next) => { //POST /post.images
-    //multer는 app.js 장착하기보단 router마다 장착함 -> 폼마다 다르게 적용되기 때문
+//multer는 app.js 장착하기보단 router마다 장착함 -> 폼마다 다르게 적용되기 때문
+// 파일 업로드 후 이미지 데이터 저장
+router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => { // POST /post/images
     console.log(req.files);
     res.json(req.files.map((v) => v.filename));
-});
-
-router.get('/:postId', async (req, res, next ) => { // GET /post/1
+  });
+  
+router.get('/:postId', async (req, res, next) => {
     try {
-        const post = await Post.findOne({
-            where: { id: req.params.postId },
-        });
-        if (!post) {
-            return res.status(404).send('존재하지 않는 게시글입니다.');
-        }
-       const fullPost = await Post.findOne({
-        where: {id: post.id},
+      const post = await Post.findOne({
+        where: { id: req.params.postId },
         include: [{
-            model: Post,
-            as: 'Retweet',
-            include: [{
-                model: User,
-                attributes: ['id', 'nickname'],
-            },{
-                model:Image,
-            }]
-        },{
+          model: User,
+          attributes: ['id', 'nickname'],
+        }, {
+          model: Image,
+        }, {
+          model: Comment,
+          include: [{
             model: User,
             attributes: ['id', 'nickname'],
-        },{
-            model: User,
-            as: 'Likers', //좋아요 누른 사람
-            attributes: ['id','nickname'],
-        },{
-            model: Image,
-        },{
-            model: Comment,
-            include:[{
-                model: User,
-                attributes: ['id', 'nickname']
-            }],
+            order: [['createdAt', 'DESC']],
+          }],
+        }, {
+          model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id'],
         }],
-       })
-        res.status(200).json(fullPost);
+      });
+      res.status(200).json(post);
     } catch (error) {
-        console.error(error);
-        next(error);
+      console.error(error);
+      next(error);
     }
-});
-
-
+  });
 
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next ) => { // POST /post/1/retweet
     try {

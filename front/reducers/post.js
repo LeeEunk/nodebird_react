@@ -263,9 +263,9 @@ const reducer = (state = initialState, action) => {
                     draft.addPostError = null;
                     break;
             case ADD_POST_SUCCESS:
-                    draft.mainPosts.unshift(action.data);// dummyPost를 앞에다가 추가해야 신규 게시물이 맨앞에서 보임
                     draft.addPostLoading = false;
                     draft.addPostDone = true;
+                    draft.mainPosts.unshift(action.data);// dummyPost를 앞에다가 추가해야 신규 게시물이 맨앞에서 보임
                     draft.imagePaths = [];
                     break;
             case ADD_POST_FAILURE:
