@@ -50,6 +50,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
           await post.addImages(images);
         } else { // 이미지를 하나만 올리면 image: eunkk.png
           const image = await Image.create({ src: req.body.image });
+          
           await post.addImages(image);
         }
       }
@@ -72,7 +73,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
           attributes: ['id'],
         }]
       })
-    res.status(201).json(fullPost);
+        res.status(201).json(fullPost);
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
