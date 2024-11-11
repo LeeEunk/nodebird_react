@@ -6,7 +6,7 @@ import { END } from 'redux-saga';
 import { useInView } from 'react-intersection-observer';
 
 import axios from 'axios';
-import { LOAD_HASHTAG_POSTS_REQUEST, LOAD_POSTS_REQUEST } from '../../reducers/post';
+import { LOAD_HASHTAG_POSTS_REQUEST } from '../../reducers/post';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
@@ -24,7 +24,7 @@ function Hashtag() {
       if (inView && hasMorePosts && !loadPostsLoading) {
         const lastId = mainPosts[mainPosts.length - 1]?.id;
         dispatch({
-          type: LOAD_POSTS_REQUEST,
+          type: LOAD_HASHTAG_POSTS_REQUEST,
           lastId,
           data: tag,
         });

@@ -323,12 +323,12 @@ function* watchLoadPost() {
     yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
-function* watchLoadUserPosts() {
-    yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
-}
-
 function* watchLoadHashtagPosts() {
     yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
+
+function* watchLoadUserPosts() {
+    yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
 
 function* watchLoadPosts() {
@@ -361,8 +361,8 @@ export default function* postSaga() {
         fork(watchLoadPost),
         fork(watchUpdatePost),
         fork(watchAddPost),
-        fork(watchLoadUserPosts),
         fork(watchLoadHashtagPosts),
+        fork(watchLoadUserPosts),
         fork(watchLoadPosts),
         fork(watchRemovePost),
         fork(watchAddComment),

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 
 import axios from 'axios';
-import { LOAD_POSTS_REQUEST, LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
+import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from '../../reducers/user';
 import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
@@ -26,7 +26,7 @@ const User = () => {
         if(inView && hasMorePosts && !loadPostsLoading) {
             const lastId = mainPosts[mainPosts.length - 1]?.id;
             dispatch({
-                type: LOAD_POSTS_REQUEST,
+                type: LOAD_USER_POSTS_REQUEST,
                 lastId,
                 data: id,
             });
@@ -41,7 +41,7 @@ const User = () => {
                     {userInfo.nickname}님의 글
                 </title>
                 {/* og : sns 공유 시 미리보기 제공 */}
-                <meta name="desciption" content={`${userInfo.nickname}님의 게시글`}/>
+                <meta name="description" content={`${userInfo.nickname}님의 게시글`}/>
                 <meta property="og:title" content={`${userInfo.nickname}님의 게시글`}/>
                 <meta property="og:description" content={`${userInfo.nickname}님의 게시글`}/>
                 <meta property="og:image" content="https://nodebird.com/favicon.ico"/>
