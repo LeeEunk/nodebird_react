@@ -1,17 +1,24 @@
+const DataTypes = require('sequelize');
+const {Model} = DataTypes;
 
-module.exports = (sequelize, DataTypes) => {
-    const Post = sequelize.define('Post', { // MySQL에는 Posts 테이블 생성
-        // id가 기본적으로 들어있다.
-        content: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-        },
-        // RetweetId
-    }, {
-        charset: 'utf8mb4', //이모티콘 넣을려면 mb4도 넣어줘야함
-        collate: 'utf8mb4_general_ci', // 한글 저장
-    });
-    Post.associate = (db) => {
+module.exports = class Post extends Model {
+    static init(sequelize) {
+        return super.init({
+            content: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            // RetweetId
+        }, {
+            modelName: 'Post',
+            tableName:'posts',
+            charset: 'utf8mb4', //이모티콘 넣을려면 mb4도 넣어줘야함
+            collate: 'utf8mb4_general_ci', // 한글 저장
+            sequelize,
+        });
+    }
+        
+    static associate = (db) => {
         // 게시물은 작성자에 속해져있다.
         db.Post.belongsTo(db.User); // 게시글 작성자 //post.addUser, post.getUser, post.setUser
         //테이블이 하나 더 생김(PostHashtag라는 중간테이블이 생성됨)
@@ -23,7 +30,4 @@ module.exports = (sequelize, DataTypes) => {
         db.Post.belongsTo(db.Post, {as: 'Retweet'}); // PostId -> RetweetID로 변경됨 //post.addRetweet
          
     };
-    
-
-    return Post;
 }

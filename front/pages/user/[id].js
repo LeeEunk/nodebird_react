@@ -53,7 +53,7 @@ const User = () => {
                     <Card
                         style={{ marginBottom: 20}}
                         actions={[
-                            <div key="twit"> 짹짹 <br />
+                            <div key="twit"> 게시물 <br />
                             {userInfo.Posts}
                             </div>,
                             <div key="following">

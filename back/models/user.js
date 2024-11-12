@@ -2,28 +2,33 @@ const DataTypes = require('sequelize');
 const { Model } = DataTypes;
 
 
-module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', { // MySQL에는 users 테이블 생성
-        // id가 기본적으로 들어있다.
-        email: {
-            type: DataTypes.STRING(30), //STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
-            allowNull: false, // 필수
-            unique: true, // 고유한 값
-        },
-        nickname: {
-            type: DataTypes.STRING(30),
-            allowNull: false, //필수
-        },
-        password: {
-            type: DataTypes.STRING(100),
-            allowNull: false, //필수
-        },
-
-    }, {
-        charset: 'utf8',
-        collate: 'utf8_general_ci', // 한글 저장
-    });
-    User.associate = (db) => {
+module.exports = class User extends Model {
+    static init(sequelize) {
+        return super.init({
+            email: {
+                type: DataTypes.STRING(30), //STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+                allowNull: false, // 필수
+                unique: true, // 고유한 값
+            },
+            nickname: {
+                type: DataTypes.STRING(30),
+                allowNull: false, //필수
+            },
+            password: {
+                type: DataTypes.STRING(100),
+                allowNull: false, //필수
+            },
+    
+        }, {
+            modelName: 'User',
+            tableName:'users',
+            charset: 'utf8',
+            collate: 'utf8_general_ci', // 한글 저장
+            sequelize,
+        });
+    }
+       
+    static associate (db) {
         //어떠한 관계들이 있는지 잘따져야함. 관계형 db 사용 이유
         //user 와 post는 1:N 관계 한명이 여러개의 게시물을 작성할 수 있음
         db.User.hasMany(db.Post);
@@ -35,6 +40,4 @@ module.exports = (sequelize, DataTypes) => {
         db.User.belongsToMany(db.User, {through: 'Follow', as: 'Followers', foreignKey: 'FollowingId'});
         db.User.belongsToMany(db.User, {through: 'Follow', as: 'Followings', foreignKey: 'FollowerId' });
     };
-
-    return User;
 }
