@@ -41,12 +41,21 @@ passportConfig();
 //         credentials: true,
 //     }))
 // }
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+    app.use(hpp()); //for 보안
+    app.use(helmet()); //for 보안
+} else {
+    app.use(morgan('dev'));
+}
+
+
 
 // router보다 늘 위에 있어야 함 위에서 아래로 실행되므로
 // req.body 인식
 app.use(cors({
-    origin: 'http://localhost:3060', // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
+    origin: ['http://localhost:3060', 'nodebird.com'], // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
     credentials: true, // 기본값은 false임, 이게 트루면 origin을 정확한 주소로 표기해야 함, 쿠키를 전송하기 위해 설정
 }));
 
@@ -101,6 +110,6 @@ app.use('/hashtag', hashtagRouter);
 
 // });
 
-app.listen(3065, () => {
-    console.log("서버 실행 중.... http://localhost:3065");
+app.listen(80, () => {
+    console.log("서버 실행 중.... http://localhost:80");
 });
