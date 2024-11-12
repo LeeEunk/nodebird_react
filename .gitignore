@@ -9,3 +9,8 @@ package-lock.json
 
 node_modules
 uploads
+
+.cache
+
+.pem
+react.pem
