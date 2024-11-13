@@ -138,7 +138,7 @@ const Signup = () => {
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(async(context) => {
-    console.log('회원가임의 getServerSideProps start');
+    console.log('회원가입의 getServerSideProps start');
     console.log(context.req.headers);
     const cookie = context.req? context.req.headers.cookie : '';
     // 쿠키 안쓰면 빈 값;
