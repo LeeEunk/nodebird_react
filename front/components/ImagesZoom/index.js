@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PropTypes, { symbol } from 'prop-types'
 import Slick from 'react-slick'
 import { Overlay, Global, Header, CloseBtn, ImgWrapper, Indicator, SlickWrapper } from './styles';
+import { backUrl } from '../../config/config';
 
 // func`` == func() 함수 호출 문법 tagged template literal
 // const Overlay = styled.div`
@@ -113,7 +114,7 @@ const ImagesZoom = ({ images, onClose }) => {
                 >
                     {images.map((v) => (
                         <ImgWrapper key={v.src}>
-                            <img src={v.src} alt={v.src}/>
+                            <img src={`${backUrl}/${v.src}`} alt={v.src}/>
                         </ImgWrapper>
                     ))}
                 </Slick>
