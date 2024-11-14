@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
     app.use(hpp());
     app.use(helmet({ contentSecurityPolicy: false}));
+    app.options('*', cors());
     app.use(cors({
         origin: 'http://3.35.132.88',
         credentials: true,
