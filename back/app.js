@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === 'production') {
 // router보다 늘 위에 있어야 함 위에서 아래로 실행되므로
 // req.body 인식
 app.use(cors({
-    origin: ['http://localhost:3060', 'nodebird.com', 'http://43.203.225.63'], // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
+    origin: ['http://localhost:3060', 'nodebird.com', '/http://3.35.132.88'], // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
     credentials: true, // 기본값은 false임, 이게 트루면 origin을 정확한 주소로 표기해야 함, 쿠키를 전송하기 위해 설정
 }));
 
