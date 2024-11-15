@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(helmet({ contentSecurityPolicy: false}));
     app.options('*', cors());
     app.use(cors({
-        origin: 'http://3.35.132.88',
+        origin: 'http://3.35.220.149',
         credentials: true,
     }));
 } else {
