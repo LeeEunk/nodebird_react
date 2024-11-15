@@ -76,12 +76,6 @@ app.use(session({
     }
 }));
 
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true }
-  }));
 
 // passport 초기화 및 세션 설정
 app.use(passport.initialize());
