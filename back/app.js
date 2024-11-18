@@ -71,7 +71,9 @@ app.use(session({
     secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
-        secure: false,
+        // secure: false,
+        secure: process.env.NODE_ENV === 'production', // 프로덕션 환경에서만 secure 적용
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax' // 프로덕션에서는 None, 개발 환경에서는 Lax
         // domain: process.env.NODE_ENV === 'production' && 'http://13.209.111.65'
     }
 }));
