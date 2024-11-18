@@ -52,7 +52,7 @@ passportConfig();
 // router보다 늘 위에 있어야 함 위에서 아래로 실행되므로
 // req.body 인식
 app.use(cors({
-    origin: ['http://localhost:3060', 'http://nodebird.com', 'http://13.209.111.65'], // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
+    origin: ['http://localhost:3060', 'http://13.209.111.65'], // * 대신 보낸 곳의 주소가 자동으로 들어가야 보안이 높아짐, 단, true로 해도 무방.
     credentials: true, // 기본값은 false임, 이게 트루면 origin을 정확한 주소로 표기해야 함, 쿠키를 전송하기 위해 설정
 }));
 
@@ -73,8 +73,8 @@ app.use(session({
         httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
         // secure: false,
         secure: process.env.NODE_ENV === 'production', // 프로덕션 환경에서만 secure 적용
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax' // 프로덕션에서는 None, 개발 환경에서는 Lax
-        // domain: process.env.NODE_ENV === 'production' && 'http://13.209.111.65'
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 프로덕션에서는 None, 개발 환경에서는 Lax
+        domain: process.env.NODE_ENV === 'production' && 'http://13.209.111.65'
     }
 }));
 
