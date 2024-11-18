@@ -72,7 +72,7 @@ app.use(session({
     cookie: {
         httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
         secure: false,
-        domain: process.env.NODE_ENV === 'production' && 'http://13.209.111.65'
+        // domain: process.env.NODE_ENV === 'production' && 'http://13.209.111.65'
     }
 }));
 
