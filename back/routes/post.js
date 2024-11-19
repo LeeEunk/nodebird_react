@@ -18,24 +18,21 @@ try {
         fs.mkdirSync('uploads');
     }
 
-AWS.config.update({
-    accessKeyId: process.env.S3_ACCESS_KEY_ID,
-    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-    region: 'ap-northeast-2',
-});
-
-const upload = multer({
-    storage: multerS3({
-        s3: new AWS.S3({
-            logger: console, // AWS SDK 로그 활성화
+    AWS.config.update({
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        region: 'ap-northeast-2',
+      });
+      const upload = multer({
+        storage: multerS3({
+          s3: new AWS.S3(),
+          bucket: 'node-bird',
+          key(req, file, cb) {
+            cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`)
+          }
         }),
-        bucket: 'node-bird',
-        key(req, file, cb) {
-            cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
-        }
-    }),
-    limits: { fileSize: 20* 1024 * 1024 }, // 20MB
-});
+        limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+      });
 
 // const upload = multer({
 //         storage: multer.diskStorage({ // 하드disk에 저장
