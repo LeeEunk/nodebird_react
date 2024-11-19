@@ -179,7 +179,7 @@ function* logIn(action) {
             data: result.data,
         });
     } catch (err) {
-        console.error("Login request failed:", error);
+        console.error("Login request failed:", err);
         yield put({
             type: LOG_IN_FAILURE,
             error: err.response.data,
