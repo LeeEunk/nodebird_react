@@ -16,7 +16,7 @@ const App = ( {Component} ) => { //index.js 의 return 부분이 여기의 compo
             <Head>
                 <meta charSet='utf-8'/>
                 <link rel="icon" href="/favicon.ico" />
-                <title>NodeBird</title>
+                <title>EunMeta</title>
             </Head>
             <Component/>
         </>

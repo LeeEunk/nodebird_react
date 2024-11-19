@@ -51,7 +51,7 @@ const AppLayout = ({ children }) => {
       <Global/>
         <Menu mode='horizontal' selectedKeys={[router.pathname]}
         items={[
-          { label: <Link href="/"><a>노즈버드</a></Link>, key: '/'},
+          { label: <Link href="/"><a>은경메타</a></Link>, key: '/'},
           { label: <Link href="/profile"><a>프로필</a></Link>, key: '/profile'},
           { label: <SearchInput enterButton 
             value={searchInput}
