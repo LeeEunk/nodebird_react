@@ -48,6 +48,13 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
+app.use((err, req, res, next) => {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ message: '파일 크기가 너무 큽니다.' });
+    }
+    next(err);
+});
+
 // router보다 늘 위에 있어야 함 위에서 아래로 실행되므로
 // req.body 인식
 // app.use(cors({

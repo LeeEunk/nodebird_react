@@ -26,7 +26,9 @@ AWS.config.update({
 
 const upload = multer({
     storage: multerS3({
-        s3: new AWS.S3(),
+        s3: new AWS.S3({
+            logger: console, // AWS SDK 로그 활성화
+        }),
         bucket: 'node-bird',
         key(req, file, cb) {
             cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
