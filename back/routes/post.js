@@ -104,7 +104,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
 // 파일 업로드 후 이미지 데이터 저장
 router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => { // POST /post/images
     console.log(req.files);
-    res.json(req.files.map((v) => v.location.replce(/\/original\//, '/thumb/'))); // original 폴더 대신에 thumb폴더로 이동해서 resizing된 이미지로 대체됨
+    res.json(req.files.map((v) => v.location.replace(/\/original\//, '/thumb/'))); // original 폴더 대신에 thumb폴더로 이동해서 resizing된 이미지로 대체됨
   });
   
 router.get('/:postId', async (req, res, next) => {
