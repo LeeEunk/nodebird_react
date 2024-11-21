@@ -32,7 +32,7 @@ const Post = () => {
         <meta name="description" content={singlePost.content} />
         <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
         <meta property="og:description" content={singlePost.content} />
-        <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'http://eunkk.store/favicon.ico'} />
+        <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
         <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
       </Head>
       <PostCard post={singlePost} />
@@ -54,9 +54,11 @@ const Post = () => {
 export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
   const cookie = context.req ? context.req.headers.cookie : '';
   console.log(context);
+  // 쿠키 안쓰면 빈 값;  
   axios.defaults.headers.Cookie = '';
+    // 막기위해서는
   if (context.req && cookie) {
-    axios.defaults.headers.Cookie = cookie;
+    axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
   }
   context.store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
@@ -66,6 +68,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
     data: context.params.id,
   });
   context.store.dispatch(END);
+  // SUCCESS될때까지 기다려줌
   await context.store.sagaTask.toPromise();
 });
 

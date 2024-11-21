@@ -21,7 +21,6 @@ const User = () => {
   const { userInfo, me } = useSelector((state) => state.user);
 
   const [ref, inView] = useInView();
-
   useEffect(
     () => {
       if (inView && hasMorePosts && !loadPostsLoading) {
@@ -87,31 +86,27 @@ const User = () => {
       <div ref={hasMorePosts && !loadPostsLoading ? ref : undefined} style={{ height: 10 }} />
     </AppLayout>
   );
-}
+};
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => { 
-  const cookie = req ? req.headers.cookie : '';
-  // 쿠키 안쓰면 빈 값;
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
   axios.defaults.headers.Cookie = '';
-  // 막기위해서는
-  if (req && cookie ) {
-      axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
-  } 
-  
-  store.dispatch({
-      type: LOAD_USER_POSTS_REQUEST,
-      data: params.id,
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_USER_POSTS_REQUEST,
+    data: context.params.id,
   });
-  store.dispatch({
-      type: LOAD_MY_INFO_REQUEST,
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
   });
-  store.dispatch({
-      type: LOAD_USER_REQUEST,
-      data: params.id,
+  context.store.dispatch({
+    type: LOAD_USER_REQUEST,
+    data: context.params.id,
   });
-  store.dispatch(END);
-  // SUCCESS될때까지 기다려줌
-  await store.sagaTask.toPromise();
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
 });
 
 export default User;
