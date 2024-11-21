@@ -32,7 +32,7 @@ const Post = () => {
         <meta name="description" content={singlePost.content} />
         <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
         <meta property="og:description" content={singlePost.content} />
-        <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
+        <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'http://eunkk.store/favicon.ico'} />
         <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
       </Head>
       <PostCard post={singlePost} />
@@ -53,6 +53,11 @@ const Post = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
   const cookie = context.req ? context.req.headers.cookie : '';
+  const {id} = context.params;
+
+  if (!id || isNaN(Number(id))) { //id가 숫자가 아니면 404로 처리
+    return{notFound: true };
+  }
   console.log(context);
   // 쿠키 안쓰면 빈 값;  
   axios.defaults.headers.Cookie = '';
