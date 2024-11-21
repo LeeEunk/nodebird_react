@@ -5,7 +5,7 @@ const s3 = new AWS.S3();
 
 // 람다는 한가지의 기능을 하는 작은 함수
 exports.handler = async (event, context, callback) => {
-    const Bucket = event.Records[0].s3.Bucket.name; //node-bird
+    const Bucket = event.Records[0].s3.bucket.name; //node-bird
     const Key = decodeURIComponent(event.Records[0].s3.object.key);// original/12312312_eunkk.png
     console.log(Bucket, Key);
     const filename = Key.split('/')[Key.split('/').length - 1] ; // 12312312_eunkk.png
