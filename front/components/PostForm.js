@@ -76,7 +76,7 @@ const PostForm = () => {
         {imagePaths.map((v, i) => (//map 안에 데이터를 만들고 싶으면 고차함수로 만들어야 함
           <div key={v} style={{ display: 'inline-block' }}>
             {/* <img src={`${backUrl}/${v}`} style={{ width: '200px' }} alt={v} /> */}
-            <img src={v} style={{ width: '200px' }} alt={v} />
+            <img src={v.replace(/>\/thumb\//, '/original/')} style={{ width: '200px' }} alt={v} />
             <div>
               <Button onClick={onRemoveImage(i)}>제거</Button>
             </div>
