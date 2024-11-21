@@ -89,24 +89,28 @@ const User = () => {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => {
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => { 
   const cookie = req ? req.headers.cookie : '';
+  // 쿠키 안쓰면 빈 값;
   axios.defaults.headers.Cookie = '';
-  if (req && cookie) {
-    axios.defaults.headers.Cookie = cookie;
-  }
+  // 막기위해서는
+  if (req && cookie ) {
+      axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
+  } 
+  
   store.dispatch({
-    type: LOAD_USER_POSTS_REQUEST,
-    data: params.id,
+      type: LOAD_USER_POSTS_REQUEST,
+      data: params.id,
   });
   store.dispatch({
-    type: LOAD_MY_INFO_REQUEST,
+      type: LOAD_MY_INFO_REQUEST,
   });
   store.dispatch({
-    type: LOAD_USER_REQUEST,
-    data: params.id,
+      type: LOAD_USER_REQUEST,
+      data: params.id,
   });
   store.dispatch(END);
+  // SUCCESS될때까지 기다려줌
   await store.sagaTask.toPromise();
 });
 
