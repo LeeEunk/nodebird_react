@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
@@ -14,7 +14,6 @@ import AppLayout from '../../components/AppLayout';
 import PostCard from '../../components/PostCard';
 
 const Post = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
   const { singlePost } = useSelector((state) => state.post);
@@ -54,17 +53,10 @@ const Post = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
   const cookie = context.req ? context.req.headers.cookie : '';
-  const {id} = context.params;
-
-  if (!id || isNaN(Number(id))) { //id가 숫자가 아니면 404로 처리
-    return{notFound: true };
-  }
   console.log(context);
-  // 쿠키 안쓰면 빈 값;  
   axios.defaults.headers.Cookie = '';
-    // 막기위해서는
   if (context.req && cookie) {
-    axios.defaults.headers.Cookie = cookie; // 다른 브라우저에서도 내 쿠키를 사용하는 케이스가 생김
+    axios.defaults.headers.Cookie = cookie;
   }
   context.store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
@@ -74,7 +66,6 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
     data: context.params.id,
   });
   context.store.dispatch(END);
-  // SUCCESS될때까지 기다려줌
   await context.store.sagaTask.toPromise();
 });
 
