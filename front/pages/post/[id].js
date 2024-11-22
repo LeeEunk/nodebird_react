@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
@@ -14,6 +14,7 @@ import AppLayout from '../../components/AppLayout';
 import PostCard from '../../components/PostCard';
 
 const Post = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
   const { singlePost } = useSelector((state) => state.post);
