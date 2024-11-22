@@ -16,7 +16,7 @@ import PostCard from '../../components/PostCard';
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { singlePost } = useSelector((state) => state.post);
+  const { singlePost, loadPostLoading } = useSelector((state) => state.post);
 
   // if (router.isFallback) {
   //   return <div>로딩중...</div>;
@@ -26,8 +26,17 @@ const Post = () => {
     <AppLayout>
       <Head>
         <title>
-          {singlePost.User.nickname}
-          님의 글
+        {loadPostLoading ? (
+        <div>로딩 중...</div>
+      ) : singlePost ? (
+        <div>
+          <h2>{singlePost.User?.nickname}님의 글</h2>
+          {/* 나머지 컴포넌트 */}
+        </div>
+      ) : (
+        <div>게시글을 찾을 수 없습니다.</div>
+      )}
+      
         </title>
         <meta name="description" content={singlePost.content} />
         <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
