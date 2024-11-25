@@ -15,24 +15,32 @@ import PostCard from '../../components/PostCard';
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { singlePost } = useSelector((state) => state.post);
+  const { singlePost, loadPostError } = useSelector((state) => state.post);
 
   // if (router.isFallback) {
   //   return <div>로딩중...</div>;
   // }
 
+  if (!singlePost) {
+    return <div>로딩 중이거나 게시글을 찾을 수 없습니다.</div>
+  }
+
+  if (loadPostError) {
+    return <div> 게시글 로드 중 에러가 발생했씁니다 : { loadPostError }</div>
+  }
+
   return (
     <AppLayout>
       <Head>
         <title>
-          {singlePost.User.nickname}
+          {singlePost.User?.nickname || '익명'}
           님의 글
         </title>
-        <meta name="description" content={singlePost.content} />
-        <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
-        <meta property="og:description" content={singlePost.content} />
+        <meta name="description" content={singlePost.content || ''} />
+        <meta property="og:title" content={`${singlePost.User?.nickname || '익명'}님의 게시글`} />
+        <meta property="og:description" content={singlePost.content || ''} />
         <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
-        <meta property="og:url" content={`https://nodebird.com/post/${id}`} />
+        <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
       </Head>
       <PostCard post={singlePost} />
     </AppLayout>

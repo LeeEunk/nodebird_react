@@ -146,11 +146,13 @@ router.get('/:postId', async (req, res, next) => { // GET /post/1
           }],
         }],
       })
+      console.log('Requested Post Id:', req.params.postId);
+      console.log('Full Post Data:', fullPost);
       res.status(200).json(fullPost);
     } catch (error) {
       console.error(error);
-      // next(error);
-      res.status(500).send('Internal Server Error');
+      next(error);
+      // res.status(500).send('Internal Server Error');
     }
   });
   
