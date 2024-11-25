@@ -32,7 +32,7 @@ const Post = () => {
         <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
         <meta property="og:description" content={singlePost.content} />
         <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
-        <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
+        <meta property="og:url" content={`https://nodebird.com/post/${id}`} />
       </Head>
       <PostCard post={singlePost} />
     </AppLayout>
@@ -50,21 +50,22 @@ const Post = () => {
 //   };
 // }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => {
-  const cookie = req ? req.headers.cookie : '';
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  console.log(context);
   axios.defaults.headers.Cookie = '';
-  if (req && cookie) {
+  if (context.req && cookie) {
     axios.defaults.headers.Cookie = cookie;
   }
-  store.dispatch({
+  context.store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   });
-  store.dispatch({
+  context.store.dispatch({
     type: LOAD_POST_REQUEST,
-    data: params.id,
+    data: context.params.id,
   });
-  store.dispatch(END);
-  await store.sagaTask.toPromise();
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
 });
 
 export default Post;

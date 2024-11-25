@@ -50,6 +50,9 @@ try {
 
 router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST /post
     try {
+      if( !req.body.content) {
+        return res.status(400).send('Content is required');
+      }
         const hashtags = req.body.content.match(/#[^\s#]+/g);
         const post = await Post.create({
             content: req.body.content,
@@ -94,7 +97,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next ) => { // POST
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
-        next(error);
+        // next(error);
     }
 });
 
@@ -107,7 +110,7 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => { 
     res.json(req.files.map((v) => v.location.replace(/\/original\//, '/thumb/'))); // original 폴더 대신에 thumb폴더로 이동해서 resizing된 이미지로 대체됨
   });
   
-  router.get('/:postId', async (req, res, next) => { // GET /post/1
+router.get('/:postId', async (req, res, next) => { // GET /post/1
     try {
       const post = await Post.findOne({
         where: { id: req.params.postId },
@@ -146,7 +149,8 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => { 
       res.status(200).json(fullPost);
     } catch (error) {
       console.error(error);
-      next(error);
+      // next(error);
+      res.status(500).send('Internal Server Error');
     }
   });
   
