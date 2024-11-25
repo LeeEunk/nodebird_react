@@ -184,7 +184,7 @@ function loadPostAPI(data) {
 
 function* loadPost(action) {
     try {
-        const result = yield call(loadPostAPI, action.last) 
+        const result = yield call(loadPostAPI, action.data); 
         yield put({ //put은 action을 dispatch
             type: LOAD_POST_SUCCESS,
             data: result.data,

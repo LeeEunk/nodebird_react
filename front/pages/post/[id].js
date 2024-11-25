@@ -42,7 +42,18 @@ const Post = () => {
         <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
         <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
       </Head>
-      <PostCard post={singlePost} />
+      {/* <PostCard post={singlePost} /> */}
+      {singlePost ? (
+        <PostCard post={singlePost} />
+      ) : (
+        <div>
+          {loadPostError ? (
+            <div>게시글 로딩 중 오류 발생: {loadPostError}</div>
+          ) : (
+            <div>게시글을 찾을 수 없습니다.</div>
+          )}
+        </div>
+      )}
     </AppLayout>
   );
 };
