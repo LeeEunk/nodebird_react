@@ -1,1 +1,1 @@
-export const backUrl = process.env.NODE_ENV === 'production' ? 'http://api.eunkk.store' : 'http://localhost:3065'   ;
+export const backUrl = process.env.NODE_ENV === 'production' ? 'https://api.eunkk.store' : 'http://localhost:3065'   ;
