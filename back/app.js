@@ -69,16 +69,17 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // session 설정 -> 쿠키값과 세션값을 연결하기 위해 토큰값을 들고 있음
 app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: process.env.COOKIE_SECRET,
-  proxy: true,
-  cookie: {
-    httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
-    secure: true,
-    domain: process.env.NODE_ENV === 'production' && '.eunkk.store'
-  },
-}));
+    name: 'connect.sid',  // 기본값이 connect.sid
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+    proxy: process.env.NODE_ENV === 'production',
+    cookie: {
+      httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
+      secure: process.env.NODE_ENV === 'production',
+      domain: process.env.NODE_ENV === 'production' ? '.eunkk.store' : undefined,
+    },
+  }));
 app.use((req, res, next) => {
     console.log(req.session);
     next();
