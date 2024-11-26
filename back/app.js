@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(helmet());
   app.use(cors({
     origin: 'https://eunkk.store',
-    credentials: true, //ehapdlsrksdp znzl wjsekf
+    credentials: true, // 도메인 간에 쿠키 전달
   }));
 } else {
   app.use(morgan('dev'));
@@ -79,6 +79,11 @@ app.use(session({
     domain: process.env.NODE_ENV === 'production' && '.eunkk.store'
   },
 }));
+app.use((req, res, next) => {
+    console.log(req.session);
+    next();
+  });
+  
 // passport 초기화 및 세션 설정
 app.use(passport.initialize());
 app.use(passport.session());
