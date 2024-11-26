@@ -33,9 +33,10 @@ passportConfig();
 
 // 프론트에서 백엔드에 어떤 요청이 있는지 보여줌
 if (process.env.NODE_ENV === 'production') {
+    app.enable('trust proxy');
     app.use(morgan('combined'));
     app.use(hpp());
-    app.use(helmet());
+    app.use(helmet( {contentSecurityPolicy: false}));
     app.use(cors({
         origin: 'https://eunkk.store',
         credentials: true,
@@ -75,13 +76,14 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    proxy: process.env.NODE_ENV === 'production',
     cookie: {
         httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
         secure: true,
         // secure: process.env.NODE_ENV === 'production' ? true : false, // 프로덕션 환경에서만 secure 적용
         // sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 프로덕션에서는 None, 개발 환경에서는 Lax
         domain: process.env.NODE_ENV === 'production' && '.eunkk.store'
-    }
+    },
 }));
 
 
