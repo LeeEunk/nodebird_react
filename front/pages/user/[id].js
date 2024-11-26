@@ -47,8 +47,8 @@ const User = () => {
           <meta name="description" content={`${userInfo.nickname}님의 게시글`} />
           <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
           <meta property="og:description" content={`${userInfo.nickname}님의 게시글`} />
-          <meta property="og:image" content="http://eunkk.store/favicon.ico" />
-          <meta property="og:url" content={`http://eunkk.store/user/${id}`} />
+          <meta property="og:image" content="https://eunkk.store/favicon.ico" />
+          <meta property="og:url" content={`https://eunkk.store/user/${id}`} />
         </Head>
       )}
       {userInfo && (userInfo.id !== me?.id)

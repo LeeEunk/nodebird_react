@@ -40,7 +40,7 @@ const Post = () => {
         <meta property="og:title" content={`${singlePost.User?.nickname || '익명'}님의 게시글`} />
         <meta property="og:description" content={singlePost.content || ''} />
         <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : 'https://nodebird.com/favicon.ico'} />
-        <meta property="og:url" content={`http://eunkk.store/post/${id}`} />
+        <meta property="og:url" content={`https://eunkk.store/post/${id}`} />
       </Head>
       {/* <PostCard post={singlePost} /> */}
       {singlePost ? (

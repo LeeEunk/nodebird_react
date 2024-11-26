@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(hpp());
     app.use(helmet());
     app.use(cors({
-        origin: 'http://eunkk.store',
+        origin: 'https://eunkk.store',
         credentials: true,
     }));
 } else {
@@ -77,7 +77,7 @@ app.use(session({
     secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
-        secure: false,
+        secure: true,
         // secure: process.env.NODE_ENV === 'production' ? true : false, // 프로덕션 환경에서만 secure 적용
         // sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 프로덕션에서는 None, 개발 환경에서는 Lax
         domain: process.env.NODE_ENV === 'production' && '.eunkk.store'
