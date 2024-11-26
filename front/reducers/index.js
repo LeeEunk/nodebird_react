@@ -42,7 +42,7 @@ import { combineReducers } from 'redux';
 const rootReducer = (state, action) => {
     switch(action.type) {
         case HYDRATE:
-            console.log('HYDRATE', action);
+            // console.log('HYDRATE', action);
             return action.payload;
         // 초기화
         default:  {

@@ -24,16 +24,19 @@ db.sequelize.sync()
     console.log('db 연결 성공');
   })
   .catch(console.error);
+
 passportConfig();
+
+
 // 프론트에서 백엔드에 어떤 요청이 있는지 보여줌
 if (process.env.NODE_ENV === 'production') {
   app.enable('trust proxy');
-  app.use(morgan('combined'));
+  app.use(morgan('combined')); // 배포 모드일 때 로그가 자세해짐.
   app.use(hpp());
-  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(helmet());
   app.use(cors({
     origin: 'https://eunkk.store',
-    credentials: true,
+    credentials: true, //ehapdlsrksdp znzl wjsekf
   }));
 } else {
   app.use(morgan('dev'));
@@ -69,10 +72,10 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   secret: process.env.COOKIE_SECRET,
-  proxy: process.env.NODE_ENV === 'production',
+  proxy: true,
   cookie: {
     httpOnly: true, // 클라이언트에서 쿠키를 사용할 수 없도록 설정
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     domain: process.env.NODE_ENV === 'production' && '.eunkk.store'
   },
 }));

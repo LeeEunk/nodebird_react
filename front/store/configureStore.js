@@ -13,6 +13,7 @@ import rootSaga from '../sagas';
 // thunk는 항상 action이 함수인 경우 action은 원래 객체인데 thunk에서 함수임 => 지연함수이기에 나중에 실행해줄 수 있음
 // redux devtools를 대체할 수 있음 -> console로 찍음
 // {type: 'LOG_IN', data: {…}}
+// 배포 후에는 반드시 제거해야 함
 const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     console.log(action);
     if(typeof action === 'function') {
