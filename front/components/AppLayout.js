@@ -57,7 +57,7 @@ const AppLayout = ({ children }) => {
             value={searchInput}
             onChange={onChangeSearchInput}
             onSearch={onSearch}
-            placeholder="검색할 해시태그를 입력하세요"
+            placeholder="해시태그를 입력하세요"
             />, key: '/search'},
         ]}
         >
