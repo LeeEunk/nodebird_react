@@ -4,6 +4,7 @@ const hashtag = require('./hashtag');
 const image = require('./image');
 const post = require('./post');
 const user = require('./user');
+const report = require('./report');
 
 const env = process.env.NODE_ENV || 'development'; // 기본값 development
 const config = require('../config/config')[env];
@@ -17,6 +18,7 @@ db.Hashtag = hashtag;
 db.Image = image;
 db.Post = post;
 db.User = user;
+db.Report = report;
 
 Object.keys(db).forEach(modelName => {
   db[modelName].init(sequelize);
