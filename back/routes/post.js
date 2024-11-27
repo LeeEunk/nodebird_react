@@ -282,7 +282,7 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { //DELETE 
 });
 
 router.patch('/:postId', isLoggedIn, async (req, res, next) => { // PATCH /post/10
-    const hashtags = req.body.content.match(/#[^\s#]+/g);
+    const hashtags = req.body.content.match(/#[^\s#]+/g); //해시태그 추출
     try {
       await Post.update({
         content: req.body.content
@@ -292,12 +292,15 @@ router.patch('/:postId', isLoggedIn, async (req, res, next) => { // PATCH /post/
           UserId: req.user.id,
         },
       });
-      const post = await Post.findOne({ where: { id: req.params.postId }});
+      const post = await Post.findOne({ where: { id: req.params.postId }, include:[{model:Hashtag}], });
+      console.log(post);
       if (hashtags) {
         const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({
           where: { name: tag.slice(1).toLowerCase() },
-        }))); // [[노드, true], [리액트, true]]
-        await post.setHashTags(result.map((v) => v[0]));
+        })
+      )
+    ); // [[노드, true], [리액트, true]]
+        await post.setHashTags(result.map((v) => v[0])); //해시태그 설정
       }
       res.status(200).json({ PostId: parseInt(req.params.postId, 10), content: req.body.content });
     } catch (error) {

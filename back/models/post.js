@@ -26,6 +26,7 @@ module.exports = class Post extends Model {
         db.Post.hasMany(db.Comment); //post.addComments, post.getComments
         db.Post.hasMany(db.Image); // post.addImages, post.getImages
         // 나중에 as에 따라서 post.getLikers처럼 게시글 좋아요 누른 사람을 가져오게 됨
+        db.Post.hasMany(db.Report);
         db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers' }); // 게시물 좋아요 누른 사람 // post.addLikers, post.removeLikers
         db.Post.belongsTo(db.Post, {as: 'Retweet'}); // PostId -> RetweetID로 변경됨 //post.addRetweet
          
