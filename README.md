@@ -33,5 +33,4 @@ $ npm run dev
 [예시 화면]
 ![image](https://github.com/user-attachments/assets/b349e1d0-0ff9-429b-a88e-6d31d49488b7)
 ![image2](https://github.com/user-attachments/assets/103c4227-6c1a-41ce-8566-efc4c2b95c4c)
-https://github.com/LeeEunk/nodebird_react/blob/4a313026b93c073c0302946d1ae1a9c7987ca6cc/image2.png
 
