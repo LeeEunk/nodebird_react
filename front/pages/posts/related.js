@@ -13,7 +13,6 @@ import PostCard from '../../components/PostCard';
 import PostForm from '../../components/PostForm';
 
 const Post = () => {
-  const router = useRouter();
   const { singlePost, loadPostError } = useSelector((state) => state.post);
 
   useEffect( () => {
