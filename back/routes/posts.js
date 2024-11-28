@@ -62,7 +62,7 @@ router.get('/related', async(req, res, next) => { // follow한 게시물만 보�
                 as: 'Followers',
                 where: { id: req.user.id }
             }]
-        })
+        });
         const where = {
             UserId: { [Op.in]: followings.map((v) => v.id)}
         };
@@ -112,17 +112,20 @@ router.get('/related', async(req, res, next) => { // follow한 게시물만 보�
 
 router.get('/unrelated', async(req, res, next) => { // GET /posts -> 복수개의 게시물 조회, 1개만 가져오는거와는 구분
     try{
-        const followers = await User.findAll({
+        const followings = await User.findAll({
             attributes:['id'],
             include:[{
                 model: User,
-                as: 'Followeings',
+                as: 'Followers',
                 where: { id: req.user.id }
             }]
         })
         const where = {
-            UserId: { [Op.in]: followers.map((v) => v.id)}
+            UserId: { [Op.notIn]: followings.map((v) => v.id)}
         };
+        if(parseInt(req.query.lastId, 10)) { 
+            where.id = {[Op.lt] : parseInt(req.query.lastId, 10)}
+        }
         const posts = await Post.findAll({
             where,
             limit: 10, 
