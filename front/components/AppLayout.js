@@ -51,8 +51,23 @@ const AppLayout = ({ children }) => {
       <Global/>
         <Menu mode='horizontal' selectedKeys={[router.pathname]}
         items={[
-          { label: <Link href="/"><a>EunSNS</a></Link>, key: '/'},
+          { label: <Link href="/"><a>전체 글</a></Link>, key: '/'},
           { label: <Link href="/profile"><a>프로필</a></Link>, key: '/profile'},
+          {
+            label: '게시물',
+            key: 'SubMenu',
+            icon: <ContainerOutlined />,
+            children: [
+              {
+                type: 'group',
+                label: <Link href='posts/unrelated'><a>팔로우한 게시물</a></Link>,
+              },
+              {
+                type: 'group',
+                label: <Link href='posts/unrelated'><a>팔로우하지 않은 게시물</a></Link>,
+              },
+            ],
+          },
           { label: <SearchInput enterButton 
             value={searchInput}
             onChange={onChangeSearchInput}
