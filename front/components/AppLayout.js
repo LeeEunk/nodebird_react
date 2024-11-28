@@ -61,11 +61,15 @@ const AppLayout = ({ children }) => {
             children: [
               {
                 type: 'group',
-                label: <Link href='posts/unrelated'><a>팔로우한 게시물</a></Link>,
+                label:  <a href="posts/unrelated" target="_blank" rel="noopener noreferrer">
+                팔로우한 게시물
+              </a>,
               },
               {
                 type: 'group',
-                label: <Link href='posts/unrelated'><a>팔로우하지 않은 게시물</a></Link>,
+                label: <a href="posts/unrelated" target="_blank" rel="noopener noreferrer">
+                팔로우하지 않은 게시물
+              </a>,
               },
             ],
           },
