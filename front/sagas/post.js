@@ -33,7 +33,10 @@ import {
      UNLIKE_POST_SUCCESS,
      UPLOAD_IMAGES_FAILURE,
      UPLOAD_IMAGES_REQUEST,
-     UPLOAD_IMAGES_SUCCESS} from "../reducers/post";
+     UPLOAD_IMAGES_SUCCESS,
+     LOAD_RELATED_POSTS_REQUEST,
+     LOAD_RELATED_POSTS_SUCCESS,
+     LOAD_RELATED_POSTS_FAILURE} from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 // import shortId from "shortid";
 function retweetAPI(data) { //generate X
@@ -152,6 +155,26 @@ function* loadUserPosts(action) {
         console.error(err);
         yield put({
             type: LOAD_USER_POSTS_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
+function loadRelatedPostsAPI(data) { 
+    return axios.get(`/user/${data}/posts/related`); 
+}
+
+function* loadRelatedPosts(action) {
+    try {
+        const result = yield call(loadRelatedPostsAPI, action.data) 
+        yield put({
+            type: LOAD_RELATED_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_RELATED_POSTS_FAILURE,
             error: err.response.data,
         })
     }
@@ -322,6 +345,9 @@ function* watchUnlikePost() {
 function* watchLoadPost() {
     yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
+function* watchLoadRelatedPosts() {
+    yield takeLatest(LOAD_RELATED_POSTS_REQUEST, loadRelatedPosts);
+}
 
 function* watchLoadHashtagPosts() {
     yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
@@ -361,6 +387,7 @@ export default function* postSaga() {
         fork(watchLoadPost),
         fork(watchUpdatePost),
         fork(watchAddPost),
+        fork(watchLoadRelatedPosts),
         fork(watchLoadHashtagPosts),
         fork(watchLoadUserPosts),
         fork(watchLoadPosts),

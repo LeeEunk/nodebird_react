@@ -121,7 +121,7 @@ router.get('/unrelated', async(req, res, next) => { // GET /posts -> 복수개�
             }]
         })
         const where = {
-            UserId: { [Op.notIn]: followings.map((v) => v.id).concat(req.user.id) } // 나의 게시물은 제외
+            UserId: { [Op.notIn]: followings.map((v) => v.id).concat(req.user.id) } // 나의 게시물은
         };
         if(parseInt(req.query.lastId, 10)) { 
             where.id = {[Op.lt] : parseInt(req.query.lastId, 10)}
