@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 import Router, { useRouter } from 'next/router';
+import { ContainerOutlined } from '@ant-design/icons';
 
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
