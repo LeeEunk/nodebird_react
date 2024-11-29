@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import AppLayout from '../../components/AppLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
-import PostForm from '../components/PostForm';
-import PostCard from '../components/PostCard';
+import PostForm from '../../components/PostForm';
+import PostCard from '../../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user'
 import { useInView } from 'react-intersection-observer';
