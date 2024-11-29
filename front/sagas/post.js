@@ -161,7 +161,7 @@ function* loadUserPosts(action) {
 }
 
 function loadRelatedPostsAPI(lastId) { 
-    return axios.get(`/posts/related/posts?lastId=${lastId || 0}`); 
+    return axios.get(`/related?lastId=${lastId || 0}`); 
 }
 
 function* loadRelatedPosts(action) {

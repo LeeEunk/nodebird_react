@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import PostForm from '../../components/PostForm';
 import PostCard from '../../components/PostCard';
-import { LOAD_POSTS_REQUEST } from '../../reducers/post';
+import { LOAD_POSTS_REQUEST, LOAD_RELATED_POSTS_REQUEST } from '../../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user'
 import { useInView } from 'react-intersection-observer';
 import wrapper from '../../store/configureStore';
 import axios from 'axios';
-import { LOAD_RELATED_POSTS_REQUEST } from '../../reducers/post';
 
 // 브라우저와 프론트서버에서 실행되는 부분
 const Related = () => {
