@@ -160,13 +160,14 @@ function* loadUserPosts(action) {
     }
 }
 
-function loadRelatedPostsAPI(data) { 
-    return axios.get(`/posts/related?lastId=${lastId || 0}`); 
+function loadRelatedPostsAPI(lastId) { 
+    return axios.get(`/posts/related/posts?lastId=${lastId || 0}`); 
 }
 
 function* loadRelatedPosts(action) {
     try {
         const result = yield call(loadRelatedPostsAPI, action.lastId); 
+        console.log('load related posts : ' ,action.data);
         yield put({
             type: LOAD_RELATED_POSTS_SUCCESS,
             data: result.data,
