@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AppLayout from '../components/AppLayout';
+import AppLayout from '../../components/AppLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import PostForm from '../components/PostForm';
