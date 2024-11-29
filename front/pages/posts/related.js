@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
-import AppLayout from '../components/AppLayout';
-import PostCard from '../components/PostCard';
-import { LOAD_RELATED_POSTS_REQUEST } from '../reducers/post';
+import AppLayout from '../../components/AppLayout';
+import PostCard from '../../components/PostCard';
+import { LOAD_RELATED_POSTS_REQUEST } from '../../reducers/post';
 
 const Related = () => {
     const dispatch = useDispatch();
