@@ -167,7 +167,7 @@ function loadRelatedPostsAPI(lastId) {
 function* loadRelatedPosts(action) {
     try {
         const result = yield call(loadRelatedPostsAPI, action.lastId); 
-        console.log('load related posts : ' ,action.data);
+        console.log('load related posts : ' , result.data);
         yield put({
             type: LOAD_RELATED_POSTS_SUCCESS,
             data: result.data,
