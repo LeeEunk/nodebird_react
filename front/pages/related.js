@@ -4,11 +4,11 @@ import { Avatar, Card } from 'antd';
 import { useInView } from 'react-intersection-observer';
 import { END } from 'redux-saga';
 
-import AppLayout from '../../components/AppLayout';
-import wrapper from '../../store/configureStore';
-import PostCard from '../../components/PostCard';
-import { LOAD_RELATED_POSTS_REQUEST } from '../../reducers/post';
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
+import AppLayout from '../components/AppLayout';
+import wrapper from '../store/configureStore';
+import PostCard from '../components/PostCard';
+import { LOAD_RELATED_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import axios from 'axios';
 
 const Related = () => {
